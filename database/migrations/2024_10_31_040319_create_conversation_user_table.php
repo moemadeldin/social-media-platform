@@ -11,17 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('followers', function (Blueprint $table) {
+        Schema::create('conversation_user', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
             ->nullable()
             ->constrained('users')
             ->cascadeOnDelete();
-            $table->foreignUuid('follower_id')
+            $table->foreignUuid('conversation_id')
             ->nullable()
-            ->constrained('users')
+            ->constrained('conversations')
             ->cascadeOnDelete();
-            $table->unique(['user_id', 'follower_id']);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('followers');
+        Schema::dropIfExists('conversation_user');
     }
 };

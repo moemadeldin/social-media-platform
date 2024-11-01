@@ -12,8 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('post_comments', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('user_id')
+                ->nullable()
+                ->constrained('users')
+                ->cascadeOnDelete();
+            $table->foreignUuid('post_id')
+                ->nullable()
+                ->constrained('posts')
+                ->cascadeOnDelete();
+            $table->text('comment')->nullable();
+            $table->foreignUuid('parent_comment_id')
+                ->nullable()
+                ->constrained('post_comments')
+                ->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

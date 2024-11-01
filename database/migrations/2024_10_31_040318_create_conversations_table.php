@@ -12,8 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('conversations', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('group_id')
+            ->nullable()
+            ->constrained('groups')
+            ->cascadeOnDelete();
+            $table->foreignUuid('user_id1')
+            ->nullable()
+            ->constrained('users')
+            ->cascadeOnDelete();
+            $table->foreignUuid('user_id2')
+            ->nullable()
+            ->constrained('users')
+            ->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
