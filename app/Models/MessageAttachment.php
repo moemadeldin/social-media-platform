@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Models;
+// namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\Concerns\HasUuids;
+// use Illuminate\Database\Eloquent\Model;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
-class MessageAttachment extends Model
-{
-    use SoftDeletes, HasUuids;
+// class MessageAttachment extends Model
+// {
+//     use SoftDeletes, HasUuids;
 
 
-    protected $fillable = [
-        'message_id',
-        'attachment',
-        'attachment_type'
-    ];
-}
+//     protected $fillable = [
+//         'message_id',
+//         'attachment',
+//         'attachment_type'
+//     ];
+// }

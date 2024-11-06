@@ -6,6 +6,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -54,5 +56,41 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function collaboratorPosts(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'post_collaborator', 'user_id', 'post_id');
+    }
+    
+    public function taggedPosts(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'post_tag', 'user_id', 'post_id');
+    }
+    public function likes(): HasMany
+    {
+        return $this->hasMany(PostLike::class);
+    }
+    public function comments(): HasMany
+    {
+        return $this->hasMany(PostComment::class);
+    }
+    public function savedPosts(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'saved_posts', 'user_id', 'post_id')->withTimestamps();
+    }
+    public function followers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
+    }
+    
+    public function following(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
     }
 }

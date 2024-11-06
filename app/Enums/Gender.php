@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-enum Gender: string
+enum Gender: int
 {
-    case PREFER_NOT_TO_SAY = 'prefer not to say';
-    case MALE = 'male';
-    case FEMALE = 'female';
+    case PREFER_NOT_TO_SAY = 0;
+    case MALE = 1;
+    case FEMALE = 2;
 }

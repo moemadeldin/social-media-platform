@@ -20,11 +20,11 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('password')->nullable();
             $table->string('verification_code')->nullable();
-            $table->string('status')->default(UserStatus::INACTIVE->value);
+            $table->tinyInteger('status')->default(UserStatus::INACTIVE->value);
             $table->string('profile_picture')->nullable();
-            $table->string('gender')->default(Gender::PREFER_NOT_TO_SAY->value);
+            $table->tinyInteger('gender')->default(Gender::PREFER_NOT_TO_SAY->value);
             $table->string('bio', 150)->nullable();
-            $table->string('website', )->nullable();
+            $table->string('website', 255)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

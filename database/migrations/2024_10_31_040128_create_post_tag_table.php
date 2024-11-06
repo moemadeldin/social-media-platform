@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\PostVisibility;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('post_tag', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
                 ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
-            $table->text('caption')->nullable();
-            $table->string('location')->nullable();
-            $table->tinyInteger('visibility')->default(PostVisibility::HIDE->value);
+            $table->foreignUuid('post_id')
+                ->nullable()
+                ->constrained('posts')
+                ->cascadeOnDelete();
+            $table->unique(['post_id', 'user_id']);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('post_tag');
     }
 };

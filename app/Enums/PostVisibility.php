@@ -2,8 +2,8 @@
 
 namespace App\Enums;
 
-enum PostVisibility: string
+enum PostVisibility: int
 {
-    case HIDE = 'hidden';
-    case VISIBLE = 'visible';
+    case HIDE = 0;
+    case VISIBLE = 1;
 }

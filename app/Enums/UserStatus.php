@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-enum UserStatus: string
+enum UserStatus: int
 {
-    case INACTIVE = 'inactive';
-    case ACTIVE = 'active';
-    case BLOCKED = 'blocked';
+    case INACTIVE = 0;
+    case ACTIVE = 1;
+    case BLOCKED = 2;
 }
