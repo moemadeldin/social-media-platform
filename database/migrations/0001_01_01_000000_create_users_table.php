@@ -25,6 +25,7 @@ return new class extends Migration
             $table->tinyInteger('gender')->default(Gender::PREFER_NOT_TO_SAY->value);
             $table->string('bio', 150)->nullable();
             $table->string('website', 255)->nullable();
+            $table->string('mobile')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

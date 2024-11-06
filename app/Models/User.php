@@ -32,8 +32,11 @@ class User extends Authenticatable
         'status',
         'profile_picture',
         'gender',
-        'bio'
+        'bio',
+        'website',
+        'mobile'
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
