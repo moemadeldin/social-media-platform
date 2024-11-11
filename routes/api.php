@@ -9,6 +9,26 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-// Route::post('/login', 'Auth\AuthController@login');
+Route::middleware(['throttle:5,1'])
+    ->controller(AuthController::class)
+    ->group(function () {
+
+        Route::post('/register', 'register');
+
+        Route::post('/login', 'login');
+
+        Route::post('/forget-password', 'forgetPassword');
+
+        Route::post('/check-verification-code', 'checkVerificationCode');
+    });
+
+    Route::middleware('auth:api')->group(function () {
+
+        // Authentication routes
+    
+        Route::controller(AuthController::class)->group(function () {
+            Route::post('/register/verification/', 'verify')->middleware('throttle:5,1');
+            Route::post('/reset-password', 'resetPassword')->middleware('throttle:5,1');
+            Route::post('/logout', 'logout');
+        });
+    });

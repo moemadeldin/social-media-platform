@@ -4,35 +4,90 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\ForgetPasswordRequest;
 use App\Http\Requests\LoginRequest;
-use App\Models\User;
+use App\Http\Requests\PasswordValidationRequest;
+use App\Http\Requests\VerifyRequest;
+use App\Services\AuthService;
 use App\Util\APIResponder;
-use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-
     use APIResponder;
+
+    private AuthService $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     public function register(CreateUserRequest $request): JsonResponse
     {
-        $user = User::create(attributes: $request->validated());
 
-        $user->access_token = $user->createToken("Personal Access Token")->plainTextToken;
-
-        return $this->successResponse($user, "User Registered Successfully!");
+        return $this->successResponse(
+            $this->authService->register(
+                $request->validated()),
+            'User Registered, Waiting for verification.'
+        );
     }
-    public function login(LoginRequest $request): JsonResponse
+
+    public function verify(VerifyRequest $request): JsonResponse
     {
-        $user = User::where('email', $request->email)
-                ->orWhere('username', $request->username)
-                ->orWhere('mobile', $request->mobile)
-                ->first();
-        if(! Hash::check($request->password, $user->password)){
-            return $this->failedResponse(throw new Exception("credientals are failed"));
-        }
-        return $this->successResponse($user,"Logged in");
+
+        return $this->successResponse(
+            $this->authService->verify(
+                $request->validated()),
+            'User verified. You can now log in.'
+        );
+    }
+
+    public function login(LoginRequest $request)
+    {
+        return $this->successResponse(
+            $this->authService->login(
+                $request->validated()),
+            'Login successful.'
+        );
+    }
+
+    public function forgetPassword(ForgetPasswordRequest $request): JsonResponse
+    {
+
+        return $this->successResponse(
+            $this->authService->forgetPassword(
+                $request->validated()),
+            'OTP sent successfully.'
+        );
+    }
+
+    public function checkVerificationCode(VerifyRequest $request): JsonResponse
+    {
+        return $this->successResponse(
+            $this->authService->checkOTP(
+                $request->validated()),
+            'OTP verified, you can reset your password now.'
+        );
+    }
+
+    public function resetPassword(PasswordValidationRequest $request): JsonResponse
+    {
+        return $this->successResponse(
+            $this->authService->resetPassword(
+                $request->validated(),
+                auth()->user()), 'Password updated.'
+        );
+    }
+
+    public function logout(): JsonResponse
+    {
+
+        return $this->successResponse(
+            $this->authService->logout(
+                auth()->user()),
+            'Logged out successfully.'
+        );
+
     }
 }

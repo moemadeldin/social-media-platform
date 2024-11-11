@@ -20,7 +20,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->string('media_path')->nullable();
             $table->enum('media_type', [MediaType::IMAGE->value, MediaType::VIDEO->value])->nullable();
-            $table->integer('order')->default(0);
+            $table->integer('order')->default(1);
             $table->timestamps();   
             $table->softDeletes();
         });

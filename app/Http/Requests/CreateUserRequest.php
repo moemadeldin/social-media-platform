@@ -26,10 +26,10 @@ class CreateUserRequest extends FormRequest
     {
         return [
             'username' => ['required', 'string', 'unique:users,username'],
-            'email' => ['required_without:mobile', 'email', 'unique:users,email'],
+            'email' => ['required_without:mobile', 'email:rfc,dns', 'unique:users,email'],
             'mobile' => ['required_without:email', 'string', 'unique:users,mobile'],
             'full_name' => ['required', 'string'],
-            'password' => ['required', 'min:6', 'max:15', 'confirmed'],
+            'password' => ['required', 'min:6', 'max:15', 'confirmed', 'regex:/[a-zA-Z]/'],
         ];
     }
 }
