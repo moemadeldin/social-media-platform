@@ -26,6 +26,9 @@ return new class extends Migration
             $table->string('bio', 150)->nullable();
             $table->string('website', 255)->nullable();
             $table->string('mobile')->nullable();
+            $table->unsignedInteger('posts_count')->default(0);
+            $table->unsignedInteger('following_count')->default(0);
+            $table->unsignedInteger('followers_count')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

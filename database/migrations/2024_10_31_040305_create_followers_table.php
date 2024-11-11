@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('followers', function (Blueprint $table) {
-            $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
             ->nullable()
             ->constrained('users')
@@ -21,7 +20,7 @@ return new class extends Migration
             ->nullable()
             ->constrained('users')
             ->cascadeOnDelete();
-            $table->unique(['user_id', 'follower_id']);
+            $table->primary(['user_id', 'follower_id']);
             $table->timestamps();
             $table->softDeletes();
         });

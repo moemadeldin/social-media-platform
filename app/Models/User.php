@@ -34,7 +34,10 @@ class User extends Authenticatable
         'gender',
         'bio',
         'website',
-        'mobile'
+        'mobile',
+        'posts_count',
+        'followers_count',
+        'following_count'
     ];
 
 
