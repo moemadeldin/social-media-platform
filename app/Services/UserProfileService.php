@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Enums\ProfileStatus;
+use App\Http\Resources\UserPrivateProfileResource;
+use App\Http\Resources\UserProfileResource;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +19,15 @@ class UserProfileService
      {
         return User::where('username', $username)->firstOrFail();
      }
-
+     private function profileStatusChecker($user, $viewer)
+     {
+        if($user->profile_status == ProfileStatus::PRIVATE->value) {
+            if(!$viewer || $viewer->id != $user->id) {
+                return new UserPrivateProfileResource($user);
+            }
+        }
+        return new UserProfileResource($user);
+     }
      private function validateFollow($user, $userToFollow)
      {
         if ($user->id == $userToFollow->id) {
@@ -39,7 +50,11 @@ class UserProfileService
      }
      public function viewProfile($username)
      {
-        return $this->getUserByUsername($username);
+        $viewer = auth()->user();
+
+        $user = $this->getUserByUsername($username);
+        
+        return $this->profileStatusChecker($user, $viewer);
      }
 
      public function follow($user, $username)

@@ -23,9 +23,6 @@ class ProfileResource extends JsonResource
             'bio' => $this->bio,
             'website' => $this->website,
             'mobile' => $this->mobile,
-            'posts' => $this->posts_count,
-            'followers' => $this->followers_count,
-            'following' => $this->following_count
         ];
     }
 }

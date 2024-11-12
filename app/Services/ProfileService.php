@@ -14,15 +14,15 @@ class ProfileService
     /**
      * Create a new class instance.
      */
-    private function handleAvatarUpdate($user, $avatar) // not working
+    private function handleProfilePictureUpdate($user, $profilePicture) // not working
     {
-        $avatarPath = $avatar->store('avatars', 'public');
+        $profilePicturePath = $profilePicture->store('profile/pictures', 'public');
 
-        if ($user->avatar) {
-            Storage::disk('public')->delete($user->avatar);
+        if ($user->profile_picture) {
+            Storage::disk('public')->delete($user->profile_picture);
         }
 
-        $user->update(['avatar' => $avatarPath]);
+        $user->update(['profile_picture' => $profilePicturePath]);
     }
 
     private function changePassword($user, $data)
@@ -41,11 +41,11 @@ class ProfileService
     public function updateProfile($data, $user)
     {
 
-        if (isset($data['avatar'])) {
-            $this->handleAvatarUpdate($user, $data['avatar']);
+        if (isset($data['profile_picture'])) {
+            $this->handleProfilePictureUpdate($user, $data['profile_picture']);
         }
 
-        $user->update(Arr::except($data, ['current_password', 'password', 'password_confirmation', 'avatar']));
+        $user->update(Arr::except($data, ['current_password', 'password', 'password_confirmation', 'profile_picture']));
 
         if (isset($data['current_password']) && isset($data['password'])) {
             $this->changePassword($user, $data);

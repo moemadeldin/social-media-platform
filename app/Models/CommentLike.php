@@ -6,21 +6,22 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class PostLike extends Model
+class CommentLike extends Model
 {
     use HasUuids;
 
     protected $fillable = [
         'user_id',
-        'post_id',
+        'comment_id'
     ];
+
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);        
     }
-    public function post(): BelongsTo
+    public function comment(): BelongsTo
     {
-        return $this->belongsTo(Post::class);
+        return $this->belongsTo(PostComment::class);        
     }
 }

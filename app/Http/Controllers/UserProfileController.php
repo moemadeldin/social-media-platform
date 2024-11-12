@@ -20,9 +20,9 @@ class UserProfileController extends Controller
     }
     public function index(Request $request): JsonResponse
     {
-        return $this->successResponse(new UserProfileResource(
+        return $this->successResponse(
             $this->userProfileService->viewProfile(
-                $request->username)),
+                $request->username), 
                     'Profile');
     }
 
@@ -38,8 +38,8 @@ class UserProfileController extends Controller
     {
         return $this->successResponse(new UserProfileResource(
             $this->userProfileService->unfollow(
-            auth()->user(),
-                $request->username)),
-                    'You unfollowed this user successfully!');
+                auth()->user(),
+                    $request->username)),
+                        'You unfollowed this user successfully!');
     }
 }

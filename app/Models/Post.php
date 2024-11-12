@@ -18,7 +18,9 @@ class Post extends Model
         'user_id',
         'caption',
         'location',
-        'visibility'
+        'visibility',
+        'comments_count',
+        'likes_count'
     ];
 
 

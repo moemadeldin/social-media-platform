@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserProfileResource extends JsonResource
+class UserPrivateProfileResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,17 +15,14 @@ class UserProfileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'message' => 'This Profile is private',
             'username' => $this->username,
             'full_name' => $this->full_name,
             'profile_picture' => $this->profile_picture,
             'bio' => $this->bio,
-            'website' => $this->website,
             'posts' => $this->posts_count,
             'followers' => $this->followers_count,
             'following' => $this->following_count,
-            'followers_list' => $this->followers->pluck('username'), // move to index method
-            'following_list' => $this->following->pluck('username'), // move to index method
-            'posts_list' => PostResource::collection($this->posts),
         ];
     }
 }

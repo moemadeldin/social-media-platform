@@ -37,7 +37,8 @@ class User extends Authenticatable
         'mobile',
         'posts_count',
         'followers_count',
-        'following_count'
+        'following_count',
+        'profile_status'
     ];
 
 
@@ -85,6 +86,10 @@ class User extends Authenticatable
     public function comments(): HasMany
     {
         return $this->hasMany(PostComment::class);
+    }
+    public function likedComments(): HasMany
+    {
+        return $this->hasMany(CommentLike::class);
     }
     public function savedPosts(): BelongsToMany
     {

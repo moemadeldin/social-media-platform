@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ProfileStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ProfileRequest extends FormRequest
 {
@@ -32,6 +34,7 @@ class ProfileRequest extends FormRequest
             'gender' => ['nullable', 'digits:1'],
             'website' => ['nullable', 'string'],
             'profile_picture' => ['nullable', 'image', 'max:2048'],
+            'profile_status' => ['nullable', 'integer', Rule::in(array_map(fn($case) => $case->value, ProfileStatus::cases()))],        
         ];
     }
 }
