@@ -6,6 +6,10 @@ use App\Enums\UserStatus;
 use App\Events\UserVerificationRequested;
 use App\Exceptions\PasswordException;
 use App\Exceptions\UserStatusException;
+use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\ForgetPasswordRequest;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\VerifyRequest;
 use App\Models\User;
 use App\Notifications\PasswordChangedNotification;
 use Illuminate\Support\Facades\Hash;
@@ -25,18 +29,20 @@ class AuthService
         $user->tokens()->delete();
     }
 
-    private function findUserByEmail($email = null, $username = null, $mobile = null)
+    private function findUserByEmailOrMobileOrUsername(ForgetPasswordRequest $request)
     {
-         return User::where('email', $email)
-                ->orWhere('username', $username)
-                ->orWhere('mobile', $mobile)
-                ->firstOrFail();
+         return User::where(function($query) use ($request){
+            $query->where('mobile', $request['mobile'])
+                ->orWhere('username', $request['username'])
+                ->orWhere('email', $request['email']);
+         })
+         ->firstOrFail();
     }
-
+    
     private function validateUserCredentials($data)
     {
 
-        $user = $this->findUserByEmail($data['email'] ?? null, $data['username'] ?? null, $data['mobile'] ?? null);
+        $user = $this->findUserByEmailOrMobileOrUsername($data['email'] ?? null, $data['username'] ?? null, $data['mobile'] ?? null);
 
         if (! Hash::check($data['password'], $user->password)) {
             throw PasswordException::incorrect();
@@ -47,16 +53,16 @@ class AuthService
         return $user;
     }
 
-    private function findUserByEmailAndOTP($data)
+    private function verifyUserByEmailOrMobile(VerifyRequest $request)
     {
-        return isset($data['email'])
-        ? User::where('email', $data['email'])
-            ->where('verification_code', $data['code'])
-            ->firstOrFail()
-        : User::where('mobile', $data['mobile'])
-            ->where('verification_code', $data['code'])
-            ->firstOrFail();
+        return User::where(function ($query) use ($request) {
+            $query->where('email', $request['email_or_mobile'])
+                ->orWhere('mobile', $request['email_or_mobile']);
+        })
+        ->where('verification_code', $request['code'])
+        ->firstOrFail();
     }
+    
 
     private function ensureUserIsActive(User $user)
     {
@@ -73,18 +79,18 @@ class AuthService
         ];
     }
 
-    public function register($data)
+    public function register(CreateUserRequest $request)
     {
-        $user = User::create($data);
+        $user = User::create($request->validated());
 
         event(new UserVerificationRequested($user));
 
         return $this->respondWithUserAndToken($user);
     }
 
-    public function verify($data)
+    public function verify(VerifyRequest $request)
     {
-        $user = $this->findUserByEmailAndOTP($data);
+        $user = $this->verifyUserByEmailOrMobile($request->validated());
 
         $user->update([
             'status' => UserStatus::ACTIVE->value,
@@ -94,28 +100,28 @@ class AuthService
         return $this->respondWithUserAndToken($user);
     }
 
-    public function login($data)
+    public function login(LoginRequest $request)
     {
         return $this->respondWithUserAndToken(
             $this->validateUserCredentials(
-                $data
+                $request->validated()
             ));
     }
 
-    public function forgetPassword($data)
+    public function forgetPassword(ForgetPasswordRequest $request)
     {
-        $user = $this->findUserByEmail($data['email'] ?? null, $data['username'] ?? null, $data['mobile'] ?? null);
+        $user = $this->findUserByEmailOrMobileOrUsername($request);
 
         event(new UserVerificationRequested($user));
 
         return $user;
     }
 
-    public function checkOTP($data)
+    public function checkOTP(VerifyRequest $request)
     {
         return $this->respondWithUserAndToken(
-            $this->findUserByEmailAndOTP(
-                $data)
+            $this->verifyUserByEmailOrMobile(
+                $request)
         );
     }
 

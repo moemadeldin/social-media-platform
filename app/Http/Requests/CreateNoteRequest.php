@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\EmailOrMobileOrUsername;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ForgetPasswordRequest extends FormRequest
+class CreateNoteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +22,15 @@ class ForgetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email_or_mobile_or_username' => ['required', 'string', new EmailOrMobileOrUsername]
+            'content' => $this->getValidationRule('content')
         ];
+    }
+
+    public function getValidationRule($key)
+    {
+        if(request()->hasFile($key)){
+            return ['nullable', 'mimes:png,jpg,mp4,mp3'];
+        }
+        return ['nullable', 'string'];
     }
 }

@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCommentRequest;
 use App\Models\Post;
-use App\Models\PostComment;
+use App\Models\Comment;
 use App\Util\APIResponder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class PostCommentController extends Controller
+class CommentController extends Controller
 {
     use APIResponder;
 
@@ -20,7 +20,7 @@ class PostCommentController extends Controller
 
         $postToComment = Post::findOrFail($request->post_id);
 
-        $comment = PostComment::create(array_merge($request->validated(), [
+        $comment = Comment::create(array_merge($request->validated(), [
             'user_id' => $user->id,
             'post_id' => $postToComment->id
         ]));
@@ -33,7 +33,7 @@ class PostCommentController extends Controller
     public function update(CreateCommentRequest $request): JsonResponse
     {
         
-        $comment = PostComment::findOrFail($request->comment_id);
+        $comment = Comment::findOrFail($request->comment_id);
 
         $comment->update($request->validated());
 
@@ -45,7 +45,7 @@ class PostCommentController extends Controller
     {
         $post = Post::findOrFail($request->post_id);
 
-        $comment = PostComment::findOrFail($request->comment_id);
+        $comment = Comment::findOrFail($request->comment_id);
 
         $comment->delete();
 

@@ -5,21 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PostMedia extends Model
+class Media extends Model
 {
     use SoftDeletes, HasUuids;
 
     protected $fillable = [
-        'post_id',
         'media_path',
         'media_type',
         'order',
     ];
 
-    public function post(): BelongsTo
+    public function mediable(): MorphTo
     {
-        return $this->belongsTo(Post::class);
+        return $this->morphTo();
     }
 }

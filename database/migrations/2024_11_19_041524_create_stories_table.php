@@ -11,18 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('post_likes', function (Blueprint $table) {
+        Schema::create('stories', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
-                ->nullable()
-                ->constrained('users')
-                ->cascadeOnDelete();
-            $table->foreignUuid('post_id')
-                ->nullable()
-                ->constrained('posts')
-                ->cascadeOnDelete();
-            $table->unique(['post_id', 'user_id']);
+            ->nullable()
+            ->constrained('users')
+            ->cascadeOnDelete();
+            $table->string('content')->nullable();
+            $table->unsignedInteger('viewers_count')->default(0);
+            $table->unsignedInteger('likes_count')->default(0);
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
         });
     }
 
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('post_likes');
+        Schema::dropIfExists('stories');
     }
 };

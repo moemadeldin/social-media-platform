@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\MediaType;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class PostMediaRequest extends FormRequest
+class CreateStoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +23,15 @@ class PostMediaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'media_type' => ['required', 'integer', Rule::in(array_map(fn($case) => $case->value, MediaType::cases()))],
-            'media' => ['required', 'file', 'mimes:png,jpg,jpeg,mp4,mov', 'max:20840']
+            'content' => $this->getValidationRule('content')
         ];
+    }
+
+    public function getValidationRule($key)
+    {
+        if(request()->hasFile($key)){
+            return ['nullable', 'mimes:png,jpg,mp4'];
+        }
+        return ['nullable', 'string'];
     }
 }

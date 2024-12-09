@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PostMediaRequest;
-use App\Models\PostMedia;
+use App\Http\Requests\MediaRequest;
+use App\Models\Media;
 use App\Models\User;
 use App\Util\APIResponder;
 use Illuminate\Http\JsonResponse;
 
-class PostMediaController extends Controller
+class MediaController extends Controller
 {
     use APIResponder;
-    public function store(PostMediaRequest $request, PostMedia $postMedia): JsonResponse
+    public function store(MediaRequest $request, Media $media): JsonResponse
     {
         $user = auth()->user();
 
-        $postMedia = PostMedia::create(array_merge($request->validated(), ['post_id' => $postMedia->id]));
+        $postMedia = Media::create(array_merge($request->validated(), ['post_id' => $media->id]));
 
         if($postMedia->post->id != $user->id){
             return $this->failedResponse('you cannot upload media to this post');
@@ -24,7 +24,7 @@ class PostMediaController extends Controller
         return $this->successResponse('', 'media uploaded successfully!');
 
     }
-    public function update(PostMediaRequest $request, $username, PostMedia $postMedia): JsonResponse
+    public function update(MediaRequest $request, $username, Media $postMedia): JsonResponse
     {
         $user = User::where('username', $username)->firstOrFail();
 
@@ -36,11 +36,11 @@ class PostMediaController extends Controller
         return $this->successResponse('', 'media updated successfully!');
 
     }
-    public function destroy($username, PostMedia $postMedia): JsonResponse
+    public function destroy($username, Media $media): JsonResponse
     {
         $user = User::where('username', $username)->firstOrFail();
 
-        if($postMedia->post->id != $user->id){
+        if($media->post->id != $user->id){
             return $this->failedResponse('you cannot delete media to this post');
         }
         return $this->successResponse('', 'media deleted successfully!');

@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Follower extends Model
 {
-    use SoftDeletes, HasUuids;
+    use SoftDeletes, hasUuids;
 
     protected $fillable = [
         'user_id',
-        'follower_id'
+        'follower_id',
+        'status',
     ];
 
     public function user(): BelongsTo

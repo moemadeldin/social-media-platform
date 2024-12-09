@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -81,15 +82,15 @@ class User extends Authenticatable
     }
     public function likes(): HasMany
     {
-        return $this->hasMany(PostLike::class);
+        return $this->hasMany(Like::class);
     }
     public function comments(): HasMany
     {
-        return $this->hasMany(PostComment::class);
+        return $this->hasMany(Comment::class);
     }
-    public function likedComments(): HasMany
+    public function replies(): HasMany
     {
-        return $this->hasMany(CommentLike::class);
+        return $this->hasMany(Reply::class);
     }
     public function savedPosts(): BelongsToMany
     {
@@ -103,5 +104,14 @@ class User extends Authenticatable
     public function following(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
+    }
+
+    public function stories(): belongsToMany
+    {
+        return $this->belongsToMany(Story::class, 'story_viewers', 'user_id', 'story_id');
+    }
+    public function note(): HasOne
+    {
+        return $this->hasOne(Note::class);
     }
 }

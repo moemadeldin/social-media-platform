@@ -2,10 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\EmailOrMobileOrUsername;
+use App\Enums\MediaType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class ForgetPasswordRequest extends FormRequest
+class MediaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +24,8 @@ class ForgetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email_or_mobile_or_username' => ['required', 'string', new EmailOrMobileOrUsername]
+            'media_type' => ['required', 'integer', Rule::in(array_map(fn($case) => $case->value, MediaType::cases()))],
+            'media' => ['required', 'file', 'mimes:png,jpg,jpeg,mp4,mov', 'max:20840']
         ];
     }
 }

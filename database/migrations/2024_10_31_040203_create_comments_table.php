@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('post_comments', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
                 ->nullable()
@@ -22,10 +22,8 @@ return new class extends Migration
                 ->constrained('posts')
                 ->cascadeOnDelete();
             $table->text('comment')->nullable();
-            $table->foreignUuid('parent_comment_id')
-                ->nullable()
-                ->constrained('post_comments')
-                ->cascadeOnDelete();
+            $table->unsignedInteger('likes_count')->default(0);
+            $table->unsignedInteger('replies_count')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -36,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('post_comments');
+        Schema::dropIfExists('comments');
     }
 };

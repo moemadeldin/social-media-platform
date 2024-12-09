@@ -12,16 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('post_media', function (Blueprint $table) {
+        Schema::create('media', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('post_id')
-                ->nullable()
-                ->constrained('posts')
-                ->cascadeOnDelete();
+            $table->uuidMorphs('mediable');
             $table->string('media_path')->nullable();
             $table->enum('media_type', [MediaType::IMAGE->value, MediaType::VIDEO->value])->nullable();
             $table->integer('order')->default(1);
-            $table->timestamps();   
+            $table->timestamps();
             $table->softDeletes();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('post_media');
+        Schema::dropIfExists('media');
     }
 };

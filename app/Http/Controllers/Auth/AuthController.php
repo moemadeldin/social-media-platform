@@ -27,8 +27,7 @@ class AuthController extends Controller
     {
 
         return $this->successResponse(
-            $this->authService->register(
-                $request->validated()),
+            $this->authService->register($request),
             'User Registered, Waiting for verification.'
         );
     }
@@ -37,8 +36,7 @@ class AuthController extends Controller
     {
 
         return $this->successResponse(
-            $this->authService->verify(
-                $request->validated()),
+            $this->authService->verify($request->validated()),
             'User verified. You can now log in.'
         );
     }
@@ -46,18 +44,17 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         return $this->successResponse(
-            $this->authService->login(
-                $request->validated()),
+            $this->authService->login($request->validated()),
             'Login successful.'
         );
+
     }
 
     public function forgetPassword(ForgetPasswordRequest $request): JsonResponse
     {
 
         return $this->successResponse(
-            $this->authService->forgetPassword(
-                $request->validated()),
+            $this->authService->forgetPassword($request->validated()),
             'OTP sent successfully.'
         );
     }

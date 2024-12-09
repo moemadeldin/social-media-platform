@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\EmailOrMobile;
 use Illuminate\Foundation\Http\FormRequest;
 
 class VerifyRequest extends FormRequest
@@ -22,8 +23,7 @@ class VerifyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required_without:mobile', 'email', 'exists:users,email'],
-            'mobile' => ['required_without:email', 'string', 'exists:users,mobile'],
+            'email_or_mobile' => ['required', 'string', new EmailOrMobile],
             'code' => ['required', 'digits:4', 'exists:users,verification_code'],
         ];
     }

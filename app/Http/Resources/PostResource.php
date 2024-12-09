@@ -21,9 +21,23 @@ class PostResource extends JsonResource
             'location' => $this->location,
             'visibility' => $this->visibility,
             'likes_count' => $this->likes_count,
-            'comments_count' => $this->comments_count,
             'likes' => $this->likes->pluck('user.username'),
-            'comments' => $this->comments->pluck('user.username', 'comment')
+            'comments_count' => $this->comments_count,
+            'post_comments' => $this->comments->map(function ($comment) {
+                return [
+                    $comment->user->username => $comment->comment,
+                    'comment_likes_count' => $comment->likes_count,
+                    'comment_likes' => $comment->likes->pluck('user.username'),
+                    'replies_count' => $comment->replies_count,
+                    'replies' => $comment->replies->map(function ($reply) {
+                        return [
+                            $reply->user->username => $reply->reply,
+                            'reply_likes_count' => $reply->likes_count,
+                            'reply_likes' => $reply->likes->pluck('user.username'),
+                        ];
+                    }),
+                ];
+            }),
         ];
-    }
+    }     
 }

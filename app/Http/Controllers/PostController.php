@@ -8,7 +8,6 @@ use App\Models\Post;
 use App\Models\User;
 use App\Util\APIResponder;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
@@ -18,7 +17,6 @@ class PostController extends Controller
         $user = User::where('username', $username)->firstOrFail();
         
         $posts = $user->posts()->orderBy('created_at', 'desc')->get();
-
         return $this->successResponse(PostResource::collection($posts), 'Posts');
     }
     public function store(CreatePostRequest $request): JsonResponse

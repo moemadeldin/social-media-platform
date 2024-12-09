@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\EmailOrMobileOrUsername;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ForgetPasswordRequest extends FormRequest
+class ReplyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +22,7 @@ class ForgetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email_or_mobile_or_username' => ['required', 'string', new EmailOrMobileOrUsername]
+            'reply' => ['nullable', 'string']
         ];
     }
 }
