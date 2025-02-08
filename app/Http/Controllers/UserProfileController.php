@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserProfileResource;
@@ -8,7 +10,7 @@ use App\Util\APIResponder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class UserProfileController extends Controller
+final class UserProfileController extends Controller
 {
     use APIResponder;
 
@@ -18,28 +20,30 @@ class UserProfileController extends Controller
     {
         $this->userProfileService = $userProfileService;
     }
+
     public function index(Request $request): JsonResponse
     {
         return $this->successResponse(
             $this->userProfileService->viewProfile(
-                $request->username), 
-                    'Profile');
+                $request->username),
+            'Profile');
     }
 
     public function store(Request $request): JsonResponse
     {
         return $this->successResponse(new UserProfileResource(
             $this->userProfileService->follow(
-                auth()->user(), 
-                    $request->username)),
-                        'You followed this user successfully!');
+                auth()->user(),
+                $request->username)),
+            'You followed this user successfully!');
     }
+
     public function destroy(Request $request): JsonResponse
     {
         return $this->successResponse(new UserProfileResource(
             $this->userProfileService->unfollow(
                 auth()->user(),
-                    $request->username)),
-                        'You unfollowed this user successfully!');
+                $request->username)),
+            'You unfollowed this user successfully!');
     }
 }

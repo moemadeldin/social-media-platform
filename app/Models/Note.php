@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -8,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
-class Note extends Model
+final class Note extends Model
 {
     use HasUuids;
 
@@ -16,9 +18,8 @@ class Note extends Model
         'user_id',
         'content',
         'likes_count',
-        'expires_at'
+        'expires_at',
     ];
-
 
     public function user(): BelongsTo
     {
@@ -29,6 +30,7 @@ class Note extends Model
     {
         return $this->morphMany(Like::class, 'likable');
     }
+
     public function media(): MorphOne
     {
         return $this->morphOne(Media::class, 'mediable');

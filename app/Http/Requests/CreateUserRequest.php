@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use App\Util\APIResponder;
-class CreateUserRequest extends FormRequest
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
+
+final class CreateUserRequest extends FormRequest
 {
     use APIResponder;
+
     /**
      * Determine if the user is authorized to make this request.
      */

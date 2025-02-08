@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Enums\MediaType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class MediaRequest extends FormRequest
+final class MediaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +26,8 @@ class MediaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'media_type' => ['required', 'integer', Rule::in(array_map(fn($case) => $case->value, MediaType::cases()))],
-            'media' => ['required', 'file', 'mimes:png,jpg,jpeg,mp4,mov', 'max:20840']
+            'media_type' => ['required', 'integer', Rule::in(array_map(fn ($case) => $case->value, MediaType::cases()))],
+            'media' => ['required', 'file', 'mimes:png,jpg,jpeg,mp4,mov', 'max:20840'],
         ];
     }
 }

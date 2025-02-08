@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateStoryRequest;
@@ -10,16 +12,17 @@ use App\Util\APIResponder;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 
-class StoryController extends Controller
+final class StoryController extends Controller
 {
     use APIResponder;
+
     /**
      * Display a listing of the resource.
      */
     public function index($username): JsonResponse
     {
         $user = User::where('username', $username)->firstOrFail();
-        
+
         $stories = $user->stories()->orderBy('created_at', 'desc')->get();
 
         return $this->successResponse(StoryResource::collection($stories), 'Stories');
@@ -35,6 +38,7 @@ class StoryController extends Controller
             'user_id' => $user->id,
             'expires_at' => Carbon::now()->addHours(24),
         ]));
+
         return $this->successResponse($story, 'Story has been added successfully!');
     }
 

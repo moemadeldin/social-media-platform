@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Enums\ProfileStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ProfileRequest extends FormRequest
+final class ProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,7 +36,7 @@ class ProfileRequest extends FormRequest
             'gender' => ['nullable', 'digits:1'],
             'website' => ['nullable', 'string'],
             'profile_picture' => ['nullable', 'image', 'max:2048'],
-            'profile_status' => ['nullable', 'integer', Rule::in(array_map(fn($case) => $case->value, ProfileStatus::cases()))],        
+            'profile_status' => ['nullable', 'integer', Rule::in(array_map(fn ($case) => $case->value, ProfileStatus::cases()))],
         ];
     }
 }

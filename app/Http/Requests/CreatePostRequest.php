@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
-use App\Enums\MediaType;
 use App\Enums\PostVisibility;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CreatePostRequest extends FormRequest
+final class CreatePostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +27,7 @@ class CreatePostRequest extends FormRequest
     {
         return [
             'caption' => ['nullable', 'string'],
-            'visibility' => ['required', 'integer', Rule::in(array_map(fn($case) => $case->value, PostVisibility::cases()))],
+            'visibility' => ['required', 'integer', Rule::in(array_map(fn ($case) => $case->value, PostVisibility::cases()))],
             'collaborator' => ['nullable', 'string'],
             'location' => ['nullable', 'string'],
             'tags' => ['nullable', 'string'],

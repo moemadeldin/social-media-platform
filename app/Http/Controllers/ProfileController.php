@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PasswordValidationRequest;
@@ -9,7 +11,7 @@ use App\Services\ProfileService;
 use App\Util\APIResponder;
 use Illuminate\Http\JsonResponse;
 
-class ProfileController extends Controller
+final class ProfileController extends Controller
 {
     use APIResponder;
 
@@ -24,6 +26,7 @@ class ProfileController extends Controller
     {
         return $this->successResponse(new ProfileResource(auth()->user()), 'Your Profile');
     }
+
     public function update(ProfileRequest $request): JsonResponse
     {
 

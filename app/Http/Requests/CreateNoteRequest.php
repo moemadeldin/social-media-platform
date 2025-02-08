@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateNoteRequest extends FormRequest
+final class CreateNoteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,15 +24,16 @@ class CreateNoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => $this->getValidationRule('content')
+            'content' => $this->getValidationRule('content'),
         ];
     }
 
     public function getValidationRule($key)
     {
-        if(request()->hasFile($key)){
+        if (request()->hasFile($key)) {
             return ['nullable', 'mimes:png,jpg,mp4,mp3'];
         }
+
         return ['nullable', 'string'];
     }
 }

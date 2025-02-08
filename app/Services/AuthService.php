@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\UserStatus;
@@ -14,71 +16,8 @@ use App\Models\User;
 use App\Notifications\PasswordChangedNotification;
 use Illuminate\Support\Facades\Hash;
 
-class AuthService
+final class AuthService
 {
-    /**
-     * Create a new class instance.
-     */
-    private function generateAccessToken(User $user)
-    {
-        return $user->createToken('Personal Access Token')->plainTextToken;
-    }
-
-    private function deleteAccessTokens(User $user)
-    {
-        $user->tokens()->delete();
-    }
-
-    private function findUserByEmailOrMobileOrUsername(ForgetPasswordRequest $request)
-    {
-         return User::where(function($query) use ($request){
-            $query->where('mobile', $request['mobile'])
-                ->orWhere('username', $request['username'])
-                ->orWhere('email', $request['email']);
-         })
-         ->firstOrFail();
-    }
-    
-    private function validateUserCredentials($data)
-    {
-
-        $user = $this->findUserByEmailOrMobileOrUsername($data['email'] ?? null, $data['username'] ?? null, $data['mobile'] ?? null);
-
-        if (! Hash::check($data['password'], $user->password)) {
-            throw PasswordException::incorrect();
-        }
-
-        $this->ensureUserIsActive($user);
-
-        return $user;
-    }
-
-    private function verifyUserByEmailOrMobile(VerifyRequest $request)
-    {
-        return User::where(function ($query) use ($request) {
-            $query->where('email', $request['email_or_mobile'])
-                ->orWhere('mobile', $request['email_or_mobile']);
-        })
-        ->where('verification_code', $request['code'])
-        ->firstOrFail();
-    }
-    
-
-    private function ensureUserIsActive(User $user)
-    {
-        if ($user->status != UserStatus::ACTIVE->value) {
-            throw UserStatusException::notActiveOrBlocked();
-        }
-    }
-
-    private function respondWithUserAndToken(User $user)
-    {
-        return [
-            'user' => $user,
-            'access_token' => $this->generateAccessToken($user),
-        ];
-    }
-
     public function register(CreateUserRequest $request)
     {
         $user = User::create($request->validated());
@@ -146,5 +85,67 @@ class AuthService
     public function logout($user)
     {
         return $this->deleteAccessTokens($user);
+    }
+
+    /**
+     * Create a new class instance.
+     */
+    private function generateAccessToken(User $user)
+    {
+        return $user->createToken('Personal Access Token')->plainTextToken;
+    }
+
+    private function deleteAccessTokens(User $user)
+    {
+        $user->tokens()->delete();
+    }
+
+    private function findUserByEmailOrMobileOrUsername(ForgetPasswordRequest $request)
+    {
+        return User::where(function ($query) use ($request) {
+            $query->where('mobile', $request['mobile'])
+                ->orWhere('username', $request['username'])
+                ->orWhere('email', $request['email']);
+        })
+            ->firstOrFail();
+    }
+
+    private function validateUserCredentials($data)
+    {
+
+        $user = $this->findUserByEmailOrMobileOrUsername($data['email'] ?? null, $data['username'] ?? null, $data['mobile'] ?? null);
+
+        if (! Hash::check($data['password'], $user->password)) {
+            throw PasswordException::incorrect();
+        }
+
+        $this->ensureUserIsActive($user);
+
+        return $user;
+    }
+
+    private function verifyUserByEmailOrMobile(VerifyRequest $request)
+    {
+        return User::where(function ($query) use ($request) {
+            $query->where('email', $request['email_or_mobile'])
+                ->orWhere('mobile', $request['email_or_mobile']);
+        })
+            ->where('verification_code', $request['code'])
+            ->firstOrFail();
+    }
+
+    private function ensureUserIsActive(User $user)
+    {
+        if ($user->status !== UserStatus::ACTIVE->value) {
+            throw UserStatusException::notActiveOrBlocked();
+        }
+    }
+
+    private function respondWithUserAndToken(User $user)
+    {
+        return [
+            'user' => $user,
+            'access_token' => $this->generateAccessToken($user),
+        ];
     }
 }

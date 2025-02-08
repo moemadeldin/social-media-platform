@@ -1,18 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ReplyRequest;
-use App\Models\Post;
 use App\Models\Comment;
+use App\Models\Post;
 use App\Models\Reply;
-use App\Models\User;
 use App\Util\APIResponder;
-use Illuminate\Http\Request;
 
-class ReplyController extends Controller
+final class ReplyController extends Controller
 {
     use APIResponder;
+
     /**
      * Display a listing of the resource.
      */
@@ -35,11 +36,11 @@ class ReplyController extends Controller
         $reply = Reply::create(array_merge($request->validated(), [
             'user_id' => $user->id,
             'post_id' => $post->id,
-            'comment_id' => $comment->id
+            'comment_id' => $comment->id,
         ]));
         $comment->increment('replies_count');
 
-        return $this->successResponse($reply, "Reply added successfully!");
+        return $this->successResponse($reply, 'Reply added successfully!');
     }
 
     /**

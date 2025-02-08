@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Util;
 
 use App\Enums\APIResponse;
 use Illuminate\Http\JsonResponse;
-    
+
 trait APIResponder
 {
     /**

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -42,7 +44,7 @@ return [
         ],
         'api' => [
             'driver' => 'sanctum',
-            'provider' => 'users'
+            'provider' => 'users',
         ],
     ],
 

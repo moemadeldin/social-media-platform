@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,13 +16,13 @@ return new class extends Migration
         Schema::create('story_viewers', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
-            ->nullable()
-            ->constrained('users')
-            ->cascadeOnDelete();
+                ->nullable()
+                ->constrained('users')
+                ->cascadeOnDelete();
             $table->foreignUuid('story_id')
-            ->nullable()
-            ->constrained('stories')
-            ->cascadeOnDelete();
+                ->nullable()
+                ->constrained('stories')
+                ->cascadeOnDelete();
             $table->unique(['user_id', 'story_id']);
             $table->timestamps();
         });

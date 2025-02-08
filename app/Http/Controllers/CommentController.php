@@ -1,18 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCommentRequest;
-use App\Models\Post;
 use App\Models\Comment;
+use App\Models\Post;
 use App\Util\APIResponder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class CommentController extends Controller
+final class CommentController extends Controller
 {
     use APIResponder;
-
 
     public function store(CreateCommentRequest $request): JsonResponse
     {
@@ -22,9 +23,9 @@ class CommentController extends Controller
 
         $comment = Comment::create(array_merge($request->validated(), [
             'user_id' => $user->id,
-            'post_id' => $postToComment->id
+            'post_id' => $postToComment->id,
         ]));
-        
+
         $postToComment->increment('comments_count');
 
         return $this->successResponse($comment, 'Commented Successfully!');
@@ -32,13 +33,13 @@ class CommentController extends Controller
 
     public function update(CreateCommentRequest $request): JsonResponse
     {
-        
+
         $comment = Comment::findOrFail($request->comment_id);
 
         $comment->update($request->validated());
 
         return $this->successResponse($comment, 'Comment Updated Successfully!');
-        
+
     }
 
     public function destroy(Request $request): JsonResponse

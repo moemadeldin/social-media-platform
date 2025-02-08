@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,9 +17,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuidMorphs('likable');
             $table->foreignUuid('user_id')
-            ->nullable()
-            ->constrained('users')
-            ->cascadeOnDelete();
+                ->nullable()
+                ->constrained('users')
+                ->cascadeOnDelete();
             $table->unique(['likable_id', 'likable_type', 'user_id']);
             $table->timestamps();
         });

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class StoryResource extends JsonResource
+final class StoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,7 +18,7 @@ class StoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'stories' => $this->story
+            'stories' => $this->story,
         ];
     }
 }

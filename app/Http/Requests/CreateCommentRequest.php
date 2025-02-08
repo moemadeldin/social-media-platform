@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateCommentRequest extends FormRequest
+final class CreateCommentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +24,7 @@ class CreateCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'comment' => ['required', 'string']
+            'comment' => ['required', 'string'],
         ];
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
-use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateStoryRequest extends FormRequest
+final class CreateStoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,15 +24,16 @@ class CreateStoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => $this->getValidationRule('content')
+            'content' => $this->getValidationRule('content'),
         ];
     }
 
     public function getValidationRule($key)
     {
-        if(request()->hasFile($key)){
+        if (request()->hasFile($key)) {
             return ['nullable', 'mimes:png,jpg,mp4'];
         }
+
         return ['nullable', 'string'];
     }
 }

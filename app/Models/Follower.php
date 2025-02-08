@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -7,9 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Follower extends Model
+final class Follower extends Model
 {
-    use SoftDeletes, hasUuids;
+    use hasUuids, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -21,7 +23,7 @@ class Follower extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    
+
     public function follower(): BelongsTo
     {
         return $this->belongsTo(User::class, 'follower_id');

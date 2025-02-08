@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateNoteRequest;
@@ -10,16 +12,17 @@ use App\Util\APIResponder;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 
-class NoteController extends Controller
+final class NoteController extends Controller
 {
     use APIResponder;
+
     /**
      * Display a listing of the resource.
      */
     public function index($username): JsonResponse
     {
         $user = User::where('username', $username)->firstOrFail();
-        
+
         $stories = $user->notes()->get();
 
         return $this->successResponse(NoteResource::collection($stories), 'Note');
@@ -31,11 +34,12 @@ class NoteController extends Controller
     public function store(CreateNoteRequest $request)
     {
         $user = auth()->user();
-        
+
         $note = Note::create(array_merge($request->validated(), [
             'user_id' => $user->id,
             'expires_at' => Carbon::now()->addHours(24),
         ]));
+
         return $this->successResponse($note, 'Note has been added successfully!');
     }
 
@@ -45,7 +49,7 @@ class NoteController extends Controller
     public function destroy($username, $id)
     {
         $user = auth()->user();
-        
+
         $note = Note::findOrFail($id);
 
         $note->delete();

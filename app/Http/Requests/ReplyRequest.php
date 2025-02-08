@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReplyRequest extends FormRequest
+final class ReplyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +24,7 @@ class ReplyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reply' => ['nullable', 'string']
+            'reply' => ['nullable', 'string'],
         ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Enums\Gender;
 use App\Enums\ProfileStatus;
 use App\Enums\UserStatus;
@@ -34,7 +36,7 @@ return new class extends Migration
             $table->unsignedInteger('posts_count')->default(0);
             $table->unsignedInteger('following_count')->default(0);
             $table->unsignedInteger('followers_count')->default(0);
-            
+
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
