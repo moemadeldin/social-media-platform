@@ -14,18 +14,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('post_tag', function (Blueprint $table) {
-            $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
-                ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->foreignUuid('post_id')
-                ->nullable()
                 ->constrained('posts')
                 ->cascadeOnDelete();
-            $table->unique(['post_id', 'user_id']);
+            $table->primary(['post_id', 'user_id']);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

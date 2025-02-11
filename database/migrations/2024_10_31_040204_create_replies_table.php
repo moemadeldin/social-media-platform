@@ -13,24 +13,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('replies', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')
-                ->nullable()
-                ->constrained('users')
-                ->cascadeOnDelete();
-            $table->foreignUuid('post_id')
-                ->nullable()
-                ->constrained('posts')
-                ->cascadeOnDelete();
-            $table->foreignUuid('comment_id')
-                ->nullable()
-                ->constrained('comments')
-                ->cascadeOnDelete();
-            $table->string('reply')->nullable();
-            $table->unsignedInteger('likes_count')->default(0);
-            $table->timestamps();
-        });
+            Schema::create('replies', function (Blueprint $table) {
+                $table->uuid('id')->primary();
+                $table->foreignUuid('user_id')
+                    ->constrained('users')
+                    ->cascadeOnDelete();
+                $table->foreignUuid('post_id')
+                    ->constrained('posts')
+                    ->cascadeOnDelete();
+                $table->foreignUuid('comment_id')
+                    ->constrained('comments')
+                    ->cascadeOnDelete();
+                $table->text('content');
+                $table->unsignedBigInteger('likes_count')->default(0);
+                $table->timestamps();
+            });
     }
 
     /**

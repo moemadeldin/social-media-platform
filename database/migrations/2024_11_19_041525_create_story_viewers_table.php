@@ -16,11 +16,9 @@ return new class extends Migration
         Schema::create('story_viewers', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
-                ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->foreignUuid('story_id')
-                ->nullable()
                 ->constrained('stories')
                 ->cascadeOnDelete();
             $table->unique(['user_id', 'story_id']);

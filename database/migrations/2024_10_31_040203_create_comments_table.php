@@ -16,18 +16,15 @@ return new class extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
-                ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->foreignUuid('post_id')
-                ->nullable()
                 ->constrained('posts')
                 ->cascadeOnDelete();
-            $table->text('comment')->nullable();
-            $table->unsignedInteger('likes_count')->default(0);
-            $table->unsignedInteger('replies_count')->default(0);
+            $table->text('content');
+            $table->unsignedBigInteger('likes_count')->default(0);
+            $table->unsignedBigInteger('replies_count')->default(0);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

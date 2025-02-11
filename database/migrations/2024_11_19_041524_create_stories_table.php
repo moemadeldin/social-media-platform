@@ -16,16 +16,16 @@ return new class extends Migration
         Schema::create('stories', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
-                ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
-            $table->string('content')->nullable();
-            $table->unsignedInteger('viewers_count')->default(0);
-            $table->unsignedInteger('likes_count')->default(0);
+            $table->foreignUuid('media_id')
+            ->constrained('media')
+            ->cascadeOnDelete();
+            $table->text('content')->nullable();
+            $table->unsignedBigInteger('viewers_count')->default(0);
+            $table->unsignedBigInteger('likes_count')->default(0);
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
-            $table->softDeletes();
-
         });
     }
 

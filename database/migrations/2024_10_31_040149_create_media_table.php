@@ -16,12 +16,14 @@ return new class extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('post_id')
+            ->constrained('posts')
+            ->cascadeOnDelete();
             $table->uuidMorphs('mediable');
-            $table->string('media_path')->nullable();
-            $table->enum('media_type', [MediaType::IMAGE->value, MediaType::VIDEO->value])->nullable();
-            $table->integer('order')->default(1);
+            $table->string('path');
+            $table->enum('type', [MediaType::IMAGE->value, MediaType::VIDEO->value]);
+            $table->unsignedInteger('order')->default(1);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

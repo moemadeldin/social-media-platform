@@ -16,14 +16,12 @@ return new class extends Migration
         Schema::create('notes', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
-                ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
-            $table->string('content')->nullable();
+            $table->string('content');
             $table->unsignedInteger('likes_count')->default(0);
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

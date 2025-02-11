@@ -17,16 +17,16 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
-                ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->text('caption')->nullable();
             $table->string('location')->nullable();
-            $table->tinyInteger('visibility')->default(PostVisibility::HIDE->value);
-            $table->unsignedInteger('likes_count')->default(0);
-            $table->unsignedInteger('comments_count')->default(0);
+            $table->unsignedTinyInteger('visibility')
+            ->default(PostVisibility::HIDE->value)
+            ->index();
+            $table->unsignedBigInteger('likes_count')->default(0);
+            $table->unsignedBigInteger('comments_count')->default(0);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

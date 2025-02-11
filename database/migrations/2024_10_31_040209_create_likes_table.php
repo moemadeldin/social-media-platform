@@ -17,7 +17,6 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuidMorphs('likable');
             $table->foreignUuid('user_id')
-                ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->unique(['likable_id', 'likable_type', 'user_id']);

@@ -19,24 +19,14 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
             // auth
-            $table->string('username')->nullable();
-            $table->string('full_name')->nullable();
-            $table->string('email')->nullable();
-            $table->string('password')->nullable();
+            $table->string('username');
+            $table->string('full_name');
+            $table->string('email');
+            $table->string('password');
             $table->string('verification_code')->nullable();
-            $table->tinyInteger('status')->default(UserStatus::INACTIVE->value);
-            // profile settings
-            $table->string('profile_picture')->nullable();
-            $table->tinyInteger('gender')->default(Gender::PREFER_NOT_TO_SAY->value);
-            $table->string('bio', 150)->nullable();
-            $table->string('website', 255)->nullable();
-            $table->string('mobile')->nullable();
-            // profile
-            $table->tinyInteger('profile_status')->default(ProfileStatus::PUBLIC->value);
-            $table->unsignedInteger('posts_count')->default(0);
-            $table->unsignedInteger('following_count')->default(0);
-            $table->unsignedInteger('followers_count')->default(0);
-
+            $table->unsignedTinyInteger('status')->default(UserStatus::INACTIVE->value);
+            $table->index(['username', 'full_name', 'email', 'status']);
+            
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
