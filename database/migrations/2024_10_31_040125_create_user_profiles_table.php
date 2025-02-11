@@ -1,5 +1,8 @@
 <?php
 
+
+declare(strict_types = 1);
+
 use App\Enums\Gender;
 use App\Enums\ProfileStatus;
 use Illuminate\Database\Migrations\Migration;
