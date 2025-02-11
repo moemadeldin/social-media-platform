@@ -15,14 +15,12 @@ return new class extends Migration
     {
         Schema::create('post_collaborator', function (Blueprint $table) {
             $table->foreignUuid('user_id')
-                ->primary()
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->foreignUuid('post_id')
-                ->primary()
                 ->constrained('posts')
                 ->cascadeOnDelete();
-            $table->unique(['post_id', 'user_id']);
+            $table->primary(['post_id', 'user_id']);
             $table->timestamps();
         });
     }

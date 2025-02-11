@@ -19,12 +19,17 @@ return new class extends Migration
             ->primary()
             ->constrained('users')
             ->cascadeOnDelete();
-            $table->unsignedInteger('posts_count')->default(0);
-            $table->unsignedInteger('following_count')->default(0);
-            $table->unsignedInteger('followers_count')->default(0);
-            $table->unsignedInteger('reels_count')->default(0);
+            $table->unsignedInteger('posts_count')
+            ->default(0)
+            ->index();
+            $table->unsignedInteger('following_count')->default(0)
+            ->index();
+            $table->unsignedInteger('followers_count')->default(0)
+            ->index();
+            $table->unsignedInteger('reels_count')
+            ->default(0)
+            ->index();
 
-            $table->index(['posts_count', 'following_count', 'followers_count', 'reels_count']);
             $table->timestamps();
         });
     }
