@@ -16,9 +16,6 @@ return new class extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('post_id')
-            ->constrained('posts')
-            ->cascadeOnDelete();
             $table->uuidMorphs('mediable');
             $table->string('path');
             $table->enum('type', [MediaType::IMAGE->value, MediaType::VIDEO->value]);

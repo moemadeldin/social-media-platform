@@ -33,15 +33,6 @@ final class User extends Authenticatable
         'password',
         'verification_code',
         'status',
-        'profile_picture',
-        'gender',
-        'bio',
-        'website',
-        'mobile',
-        'posts_count',
-        'followers_count',
-        'following_count',
-        'profile_status',
     ];
 
     /**

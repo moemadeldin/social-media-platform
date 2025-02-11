@@ -17,7 +17,7 @@ final class Reply extends Model
         'user_id',
         'post_id',
         'comment_id',
-        'reply',
+        'content',
         'likes_count',
     ];
 

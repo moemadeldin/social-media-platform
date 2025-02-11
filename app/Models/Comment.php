@@ -13,12 +13,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 final class Comment extends Model
 {
-    use HasUuids, SoftDeletes;
+    use HasUuids;
 
     protected $fillable = [
         'user_id',
         'post_id',
-        'comment',
+        'content',
         'likes_count',
         'replies_count',
     ];

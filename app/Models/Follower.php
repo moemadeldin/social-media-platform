@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 final class Follower extends Model
 {
-    use hasUuids, SoftDeletes;
+    use hasUuids;
 
     protected $fillable = [
         'user_id',

@@ -16,6 +16,7 @@ final class Story extends Model
 
     protected $fillable = [
         'user_id',
+        'media_id',
         'content',
         'viewers_count',
         'likes_count',

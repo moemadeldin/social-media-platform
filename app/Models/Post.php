@@ -14,15 +14,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 final class Post extends Model
 {
-    use HasUuids, SoftDeletes;
+    use HasUuids;
 
     protected $fillable = [
         'user_id',
         'caption',
         'location',
         'visibility',
-        'comments_count',
         'likes_count',
+        'comments_count',
     ];
 
     public function user(): BelongsTo
