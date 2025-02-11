@@ -1,10 +1,25 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class UserStat extends Model
+final class UserStat extends Model
 {
-    //
+    protected $fillable = [
+        'user_id',
+        'posts_count',
+        'following_count',
+        'followers_count',
+        'reels_count',
+    ];
+
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
