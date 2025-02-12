@@ -21,8 +21,9 @@ return new class extends Migration
             // auth
             $table->string('username');
             $table->string('full_name');
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('password');
+            $table->string('mobile')->nullable();
             $table->string('verification_code')->nullable();
             $table->unsignedTinyInteger('status')->default(UserStatus::INACTIVE->value);
             $table->index(['username', 'full_name', 'email', 'status']);

@@ -29,7 +29,7 @@ final class AuthController extends Controller
     {
 
         return $this->successResponse(
-            $this->authService->register($request),
+            $this->authService->register($request->validated()),
             'User Registered, Waiting for verification.'
         );
     }
@@ -43,50 +43,50 @@ final class AuthController extends Controller
         );
     }
 
-    public function login(LoginRequest $request)
-    {
-        return $this->successResponse(
-            $this->authService->login($request->validated()),
-            'Login successful.'
-        );
+    // public function login(LoginRequest $request)
+    // {
+    //     return $this->successResponse(
+    //         $this->authService->login($request->validated()),
+    //         'Login successful.'
+    //     );
 
-    }
+    // }
 
-    public function forgetPassword(ForgetPasswordRequest $request): JsonResponse
-    {
+    // public function forgetPassword(ForgetPasswordRequest $request): JsonResponse
+    // {
 
-        return $this->successResponse(
-            $this->authService->forgetPassword($request->validated()),
-            'OTP sent successfully.'
-        );
-    }
+    //     return $this->successResponse(
+    //         $this->authService->forgetPassword($request->validated()),
+    //         'OTP sent successfully.'
+    //     );
+    // }
 
-    public function checkVerificationCode(VerifyRequest $request): JsonResponse
-    {
-        return $this->successResponse(
-            $this->authService->checkOTP(
-                $request->validated()),
-            'OTP verified, you can reset your password now.'
-        );
-    }
+    // public function checkVerificationCode(VerifyRequest $request): JsonResponse
+    // {
+    //     return $this->successResponse(
+    //         $this->authService->checkOTP(
+    //             $request->validated()),
+    //         'OTP verified, you can reset your password now.'
+    //     );
+    // }
 
-    public function resetPassword(PasswordValidationRequest $request): JsonResponse
-    {
-        return $this->successResponse(
-            $this->authService->resetPassword(
-                $request->validated(),
-                auth()->user()), 'Password updated.'
-        );
-    }
+    // public function resetPassword(PasswordValidationRequest $request): JsonResponse
+    // {
+    //     return $this->successResponse(
+    //         $this->authService->resetPassword(
+    //             $request->validated(),
+    //             auth()->user()), 'Password updated.'
+    //     );
+    // }
 
-    public function logout(): JsonResponse
-    {
+    // public function logout(): JsonResponse
+    // {
 
-        return $this->successResponse(
-            $this->authService->logout(
-                auth()->user()),
-            'Logged out successfully.'
-        );
+    //     return $this->successResponse(
+    //         $this->authService->logout(
+    //             auth()->user()),
+    //         'Logged out successfully.'
+    //     );
 
-    }
+    // }
 }

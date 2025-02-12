@@ -8,144 +8,131 @@ use App\Enums\UserStatus;
 use App\Events\UserVerificationRequested;
 use App\Exceptions\PasswordException;
 use App\Exceptions\UserStatusException;
-use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\ForgetPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\VerifyRequest;
 use App\Models\User;
 use App\Notifications\PasswordChangedNotification;
+use App\Repositories\AuthRepository;
 use Illuminate\Support\Facades\Hash;
 
 final class AuthService
 {
-    public function register(CreateUserRequest $request)
+    public function __construct(
+        private readonly AuthRepository $authRepository,
+        private readonly TokenManager $tokenManager
+    ){}
+    public function register(array $data): array
     {
-        $user = User::create($request->validated());
+        $user = $this->authRepository->create($data);
 
         event(new UserVerificationRequested($user));
 
-        return $this->respondWithUserAndToken($user);
+        return $this->tokenManager->respondWithUserAndToken($user);
     }
 
-    public function verify(VerifyRequest $request)
+    public function verify(array $data): array
     {
-        $user = $this->verifyUserByEmailOrMobile($request->validated());
+        $user = $this->authRepository->findUserByEmailOrMobileWithCode($data);
 
         $user->update([
             'status' => UserStatus::ACTIVE->value,
             'verification_code' => null,
         ]);
-
-        return $this->respondWithUserAndToken($user);
+        
+        return $this->tokenManager->respondWithUserAndToken($user);
     }
 
-    public function login(LoginRequest $request)
-    {
-        return $this->respondWithUserAndToken(
-            $this->validateUserCredentials(
-                $request->validated()
-            ));
-    }
+    // public function login(LoginRequest $request)
+    // {
+    //     return $this->tokenManager->respondWithUserAndToken(
+    //         $this->validateUserCredentials(
+    //             $request->validated()
+    //         ));
+    // }
 
-    public function forgetPassword(ForgetPasswordRequest $request)
-    {
-        $user = $this->findUserByEmailOrMobileOrUsername($request);
+    // public function forgetPassword(ForgetPasswordRequest $request)
+    // {
+    //     $user = $this->findUserByEmailOrMobileOrUsername($request);
 
-        event(new UserVerificationRequested($user));
+    //     event(new UserVerificationRequested($user));
 
-        return $user;
-    }
+    //     return $user;
+    // }
 
-    public function checkOTP(VerifyRequest $request)
-    {
-        return $this->respondWithUserAndToken(
-            $this->verifyUserByEmailOrMobile(
-                $request)
-        );
-    }
+    // public function checkOTP(VerifyRequest $request)
+    // {
+    //     return $this->respondWithUserAndToken(
+    //         $this->verifyUserByEmailOrMobile(
+    //             $request)
+    //     );
+    // }
 
-    public function resetPassword($data, $user)
-    {
+    // public function resetPassword($data, $user)
+    // {
 
-        if (Hash::check($data['password'], $user->password)) {
-            throw PasswordException::sameAsCurrent();
-        }
+    //     if (Hash::check($data['password'], $user->password)) {
+    //         throw PasswordException::sameAsCurrent();
+    //     }
 
-        $user->update([
-            'password' => Hash::make($data['password']),
-        ]);
+    //     $user->update([
+    //         'password' => Hash::make($data['password']),
+    //     ]);
 
-        $this->deleteAccessTokens($user);
+    //     $this->deleteAccessTokens($user);
 
-        $user->notify(new PasswordChangedNotification(config('app.admin_email')));
+    //     $user->notify(new PasswordChangedNotification(config('app.admin_email')));
 
-        return $user;
-    }
+    //     return $user;
+    // }
 
-    public function logout($user)
-    {
-        return $this->deleteAccessTokens($user);
-    }
+    // public function logout(User $user): void
+    // {
+    //     return $this->tokenManager->deleteAccessTokens($user);
+    // }
 
     /**
      * Create a new class instance.
      */
-    private function generateAccessToken(User $user)
-    {
-        return $user->createToken('Personal Access Token')->plainTextToken;
-    }
 
-    private function deleteAccessTokens(User $user)
-    {
-        $user->tokens()->delete();
-    }
 
-    private function findUserByEmailOrMobileOrUsername(ForgetPasswordRequest $request)
-    {
-        return User::where(function ($query) use ($request) {
-            $query->where('mobile', $request['mobile'])
-                ->orWhere('username', $request['username'])
-                ->orWhere('email', $request['email']);
-        })
-            ->firstOrFail();
-    }
+    // private function findUserByEmailOrMobileOrUsername(ForgetPasswordRequest $request)
+    // {
+    //     return User::where(function ($query) use ($request) {
+    //         $query->where('mobile', $request['mobile'])
+    //             ->orWhere('username', $request['username'])
+    //             ->orWhere('email', $request['email']);
+    //     })->firstOrFail();
+    // }
 
-    private function validateUserCredentials($data)
-    {
+    // private function validateUserCredentials($data)
+    // {
 
-        $user = $this->findUserByEmailOrMobileOrUsername($data['email'] ?? null, $data['username'] ?? null, $data['mobile'] ?? null);
+    //     $user = $this->findUserByEmailOrMobileOrUsername($data['email'] ?? null, $data['username'] ?? null, $data['mobile'] ?? null);
 
-        if (! Hash::check($data['password'], $user->password)) {
-            throw PasswordException::incorrect();
-        }
+    //     if (! Hash::check($data['password'], $user->password)) {
+    //         throw PasswordException::incorrect();
+    //     }
 
-        $this->ensureUserIsActive($user);
+    //     $this->ensureUserIsActive($user);
 
-        return $user;
-    }
+    //     return $user;
+    // }
 
-    private function verifyUserByEmailOrMobile(VerifyRequest $request)
-    {
-        return User::where(function ($query) use ($request) {
-            $query->where('email', $request['email_or_mobile'])
-                ->orWhere('mobile', $request['email_or_mobile']);
-        })
-            ->where('verification_code', $request['code'])
-            ->firstOrFail();
-    }
+    // private function verifyUserByEmailOrMobile(VerifyRequest $request)
+    // {
+    //     return User::where(function ($query) use ($request) {
+    //         $query->where('email', $request['email_or_mobile'])
+    //             ->orWhere('mobile', $request['email_or_mobile']);
+    //     })
+    //         ->where('verification_code', $request['code'])
+    //         ->firstOrFail();
+    // }
 
-    private function ensureUserIsActive(User $user)
-    {
-        if ($user->status !== UserStatus::ACTIVE->value) {
-            throw UserStatusException::notActiveOrBlocked();
-        }
-    }
-
-    private function respondWithUserAndToken(User $user)
-    {
-        return [
-            'user' => $user,
-            'access_token' => $this->generateAccessToken($user),
-        ];
-    }
+    // private function ensureUserIsActive(User $user)
+    // {
+    //     if ($user->status !== UserStatus::ACTIVE->value) {
+    //         throw UserStatusException::notActiveOrBlocked();
+    //     }
+    // }
 }

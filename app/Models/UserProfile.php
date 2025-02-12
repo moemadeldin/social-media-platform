@@ -16,7 +16,6 @@ final class UserProfile extends Model
         'gender',
         'bio',
         'website',
-        'mobile',
         'profile_status',
     ];
 

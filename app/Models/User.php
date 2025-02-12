@@ -33,6 +33,7 @@ final class User extends Authenticatable
         'password',
         'verification_code',
         'status',
+        'mobile',
     ];
 
     /**

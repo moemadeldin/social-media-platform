@@ -38,7 +38,7 @@ Route::middleware('auth:api')->group(function () {
     // Authentication routes
 
     Route::controller(AuthController::class)->group(function () {
-        Route::post('/register/verification/', 'verify')->middleware('throttle:5,1');
+        Route::post('/register/verification/', 'verify');
         Route::post('/reset-password', 'resetPassword')->middleware('throttle:5,1');
         Route::post('/logout', 'logout');
     });

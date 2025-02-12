@@ -25,7 +25,6 @@ return new class extends Migration
             $table->unsignedTinyInteger('gender')->default(Gender::PREFER_NOT_TO_SAY->value);
             $table->string('bio', 150)->nullable();
             $table->string('website', 255)->nullable();
-            $table->string('mobile')->nullable();
             $table->unsignedTinyInteger('profile_status')->default(ProfileStatus::PUBLIC->value);
             $table->timestamps();
         });
