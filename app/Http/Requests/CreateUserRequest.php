@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Rules\NoSpaces;
 use App\Util\APIResponder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ final class CreateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => ['required', 'string', 'unique:users,username'],
+            'username' => ['required', 'string', new NoSpaces, 'unique:users,username'],
             'email' => ['required_without:mobile', 'email:rfc,dns', 'unique:users,email'],
             'mobile' => ['required_without:email', 'string', 'digits:11', 'unique:users,mobile'],
             'full_name' => ['required', 'string'],

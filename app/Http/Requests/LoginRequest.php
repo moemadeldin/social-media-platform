@@ -26,9 +26,6 @@ final class LoginRequest extends FormRequest
     {
         return [
             'email_or_mobile_or_username' => ['required', 'string', new EmailOrMobileOrUsername],
-            // 'username' => ['required_without_all:mobile,email', 'string', 'exists:users,username'],
-            // 'mobile' => ['required_without_all:username,email', 'string', 'exists:users,mobile'],
-            // 'email' => ['required_without_all:mobile,username', 'email', 'exists:users,email'],
             'password' => ['required', 'min:6', 'max:15', 'regex:/[a-zA-Z]/'],
         ];
     }

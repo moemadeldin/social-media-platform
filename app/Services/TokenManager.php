@@ -13,7 +13,7 @@ final class TokenManager
         return $user->createToken('Personal Access Token')->plainTextToken;
     }
 
-    public function deleteAccessTokens(User $user): void
+    public function deleteAccessToken(User $user): void
     {
         $user->tokens()->delete();
     }

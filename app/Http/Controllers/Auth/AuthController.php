@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\Messages\AuthMessages;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
-use App\Http\Requests\ForgetPasswordRequest;
 use App\Http\Requests\LoginRequest;
-use App\Http\Requests\PasswordValidationRequest;
 use App\Http\Requests\VerifyRequest;
 use App\Services\AuthService;
 use App\Util\APIResponder;
@@ -30,7 +29,7 @@ final class AuthController extends Controller
 
         return $this->successResponse(
             $this->authService->register($request->validated()),
-            'User Registered, Waiting for verification.'
+            AuthMessages::REGISTERED->value
         );
     }
 
@@ -39,19 +38,26 @@ final class AuthController extends Controller
 
         return $this->successResponse(
             $this->authService->verify($request->validated()),
-            'User verified. You can now log in.'
+            AuthMessages::VERIFIED->value
         );
     }
 
-    // public function login(LoginRequest $request)
-    // {
-    //     return $this->successResponse(
-    //         $this->authService->login($request->validated()),
-    //         'Login successful.'
-    //     );
+    public function login(LoginRequest $request): JsonResponse
+    {
+        return $this->successResponse(
+            $this->authService->login($request->validated()),
+            AuthMessages::LOGGED_IN->value
+        );
 
-    // }
+    }
+    public function logout(): JsonResponse
+    {
+        $this->authService->logout(auth()->user());
 
+        return $this->successResponse(null, AuthMessages::LOGGED_OUT->value);
+    }
+
+    
     // public function forgetPassword(ForgetPasswordRequest $request): JsonResponse
     // {
 
@@ -77,16 +83,5 @@ final class AuthController extends Controller
     //             $request->validated(),
     //             auth()->user()), 'Password updated.'
     //     );
-    // }
-
-    // public function logout(): JsonResponse
-    // {
-
-    //     return $this->successResponse(
-    //         $this->authService->logout(
-    //             auth()->user()),
-    //         'Logged out successfully.'
-    //     );
-
     // }
 }
