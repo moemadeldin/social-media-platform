@@ -83,14 +83,17 @@ final class User extends Authenticatable
 
     public function followers(): BelongsToMany
     {
-        return $this->belongsToMany(self::class, 'followers', 'user_id', 'follower_id');
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
     }
 
     public function following(): BelongsToMany
     {
-        return $this->belongsToMany(self::class, 'followers', 'follower_id', 'user_id');
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
     }
-
+    public function stats(): HasOne
+    {
+        return $this->hasOne(UserStat::class);
+    }
     public function stories(): BelongsToMany
     {
         return $this->belongsToMany(Story::class, 'story_viewers', 'user_id', 'story_id');
@@ -99,6 +102,10 @@ final class User extends Authenticatable
     public function note(): HasOne
     {
         return $this->hasOne(Note::class);
+    }
+    public function profile(): hasOne
+    {
+        return $this->hasOne(UserProfile::class);
     }
 
     /**

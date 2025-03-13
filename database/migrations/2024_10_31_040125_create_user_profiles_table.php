@@ -16,9 +16,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_profiles', function (Blueprint $table) {
+        Schema::create('user_profiles', function (Blueprint $table): void {
+            $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
-            ->primary()
             ->constrained('users')
             ->cascadeOnDelete();
             $table->string('profile_picture')->nullable();
@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('bio', 150)->nullable();
             $table->string('website', 255)->nullable();
             $table->unsignedTinyInteger('profile_status')->default(ProfileStatus::PUBLIC->value);
+            $table->index(['user_id']);
             $table->timestamps();
         });
     }

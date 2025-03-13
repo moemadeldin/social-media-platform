@@ -14,7 +14,7 @@ final class FollowService
     /**
      * Create a new class instance.
      */
-    public function followRequestFinder(User $user, User $userToFollow)
+    public function followRequestFinder(User $user, User $userToFollow): Follower|null
     {
         return Follower::where('user_id', $userToFollow->id)
             ->where('follower_id', $user->id)
@@ -22,10 +22,15 @@ final class FollowService
             ->first();
     }
 
-    public function createFollowRequest(User $user, User $userToFollow)
+    public function createFollowRequest(User $user, User $userToFollow): Follower
     {
         $existingRequest = $this->followRequestFinder($user, $userToFollow);
 
+    //    dd( [
+    //         'user_id' => $userToFollow->id,
+    //         'follower_id' => $user->id,
+    //         'status' => FollowStatus::PENDING->value,
+    //    ]);
         if (! $existingRequest) {
             return Follower::create([
                 'user_id' => $userToFollow->id,
@@ -33,7 +38,6 @@ final class FollowService
                 'status' => FollowStatus::PENDING->value,
             ]);
         }
-
         return $existingRequest;
     }
     //     public function cancelFollowRequest(User $user, User $userToCancelFollow)

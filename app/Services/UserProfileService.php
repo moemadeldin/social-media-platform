@@ -34,18 +34,27 @@ final class UserProfileService
         return $this->profileStatusChecker($user, $viewer);
     }
 
-    public function follow($user, $username)
+    public function follow(User $user, string $username): mixed
     {
-        return DB::transaction(function () use ($user, $username) {
+        return DB::transaction(function () use ($user, $username): User {
             try {
-                $userToFollow = $this->getUserByUsername($username);
+                // getting user 
+                $userToFollow = $this->getUserByUsername($username)->load('stats');
+
+                // validate if user is followed or not
                 $this->followService->validateFollow($user, $userToFollow);
-                if ($user->profile_status === ProfileStatus::PRIVATE->value) {
+
+                // check if profile is private or public
+
+                if ($userToFollow->profile->profile_status === ProfileStatus::PRIVATE->value) {
+                    // Create a follow request
                     $this->followService->createFollowRequest($user, $userToFollow);
+                } else {
+                    // Directly follow if the profile is public
+                    $user->following()->attach($userToFollow->id);
+                    $user->stats->increment('following_count');
+                    $userToFollow->stats->increment('followers_count');
                 }
-                $user->following()->attach($userToFollow->id);
-                $user->increment('following_count');
-                $userToFollow->increment('followers_count');
                 DB::commit();
 
                 return $userToFollow;
@@ -56,16 +65,16 @@ final class UserProfileService
         });
     }
 
-    public function unfollow($user, $username)
+    public function unfollow(User $user, string $username): mixed
     {
-        return DB::transaction(function () use ($user, $username) {
+        return DB::transaction(function () use ($user, $username): User {
             try {
                 $userToUnFollow = $this->getUserByUsername($username);
 
                 $this->followService->validateUnFollow($user, $userToUnFollow);
                 $user->following()->detach($userToUnFollow->id);
-                $user->decrement('following_count');
-                $userToUnFollow->decrement('followers_count');
+                $user->stats->decrement('following_count');
+                $userToUnFollow->stats->decrement('followers_count');
 
                 DB::commit();
 
@@ -77,9 +86,9 @@ final class UserProfileService
         });
     }
 
-    public function accept($user, $username)
+    public function accept(User $user, string $username): mixed
     {
-        return DB::transaction(function () use ($user, $username) {
+        return DB::transaction(function () use ($user, $username): User {
             try {
                 $userToAccept = $this->getUserByUsername($username);
 
@@ -93,8 +102,8 @@ final class UserProfileService
                 ]);
 
                 $user->following()->attach($userToAccept->id);
-                $user->increment('following_count');
-                $userToAccept->increment('followers_count');
+                $user->stats->increment('following_count');
+                $userToAccept->stats->increment('followers_count');
 
                 DB::commit();
 
@@ -124,7 +133,7 @@ final class UserProfileService
 
     private function profileStatusChecker($user, $viewer)
     {
-        if ($user->profile_status === ProfileStatus::PRIVATE->value) {
+        if ($user->profile->profile_status === ProfileStatus::PRIVATE->value) {
             if (! $viewer || $viewer->id !== $user->id) {
                 if (! $viewer || ! $viewer->following()->where('user_id', $user->id)->exists()) {
                     return new UserPrivateProfileResource($user);

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('story_viewers', function (Blueprint $table) {
+        Schema::create('story_viewers', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
                 ->constrained('users')

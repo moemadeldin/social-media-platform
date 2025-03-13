@@ -14,7 +14,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('followers', function (Blueprint $table) {
+        Schema::create('followers', function (Blueprint $table): void {
+            $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
                 ->constrained('users')
                 ->cascadeOnDelete();
@@ -22,8 +23,8 @@ return new class extends Migration
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->unsignedTinyInteger('status')->default(FollowStatus::PENDING->value);
-            $table->primary(['user_id', 'follower_id']);
             $table->timestamps();
+            $table->unique(['user_id', 'follower_id']);
         });
     }
 

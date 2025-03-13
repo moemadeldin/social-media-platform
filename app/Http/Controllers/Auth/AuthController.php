@@ -7,7 +7,9 @@ namespace App\Http\Controllers\Auth;
 use App\Enums\Messages\AuthMessages;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\ForgetPasswordRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\PasswordValidationRequest;
 use App\Http\Requests\VerifyRequest;
 use App\Services\AuthService;
 use App\Util\APIResponder;
@@ -26,7 +28,6 @@ final class AuthController extends Controller
 
     public function register(CreateUserRequest $request): JsonResponse
     {
-
         return $this->successResponse(
             $this->authService->register($request->validated()),
             AuthMessages::REGISTERED->value
@@ -58,30 +59,30 @@ final class AuthController extends Controller
     }
 
     
-    // public function forgetPassword(ForgetPasswordRequest $request): JsonResponse
-    // {
+    public function forgetPassword(ForgetPasswordRequest $request): JsonResponse
+    {
 
-    //     return $this->successResponse(
-    //         $this->authService->forgetPassword($request->validated()),
-    //         'OTP sent successfully.'
-    //     );
-    // }
+        return $this->successResponse(
+            $this->authService->forgetPassword($request->validated()),
+            'OTP sent successfully.'
+        );
+    }
 
-    // public function checkVerificationCode(VerifyRequest $request): JsonResponse
-    // {
-    //     return $this->successResponse(
-    //         $this->authService->checkOTP(
-    //             $request->validated()),
-    //         'OTP verified, you can reset your password now.'
-    //     );
-    // }
+    public function checkVerificationCode(VerifyRequest $request): JsonResponse
+    {
+        return $this->successResponse(
+            $this->authService->checkOTP(
+                $request->validated()),
+            'OTP verified, you can reset your password now.'
+        );
+    }
 
-    // public function resetPassword(PasswordValidationRequest $request): JsonResponse
-    // {
-    //     return $this->successResponse(
-    //         $this->authService->resetPassword(
-    //             $request->validated(),
-    //             auth()->user()), 'Password updated.'
-    //     );
-    // }
+    public function resetPassword(PasswordValidationRequest $request): JsonResponse
+    {
+        return $this->successResponse(
+            $this->authService->resetPassword(
+                $request->validated(),
+                auth()->user()), 'Password updated.'
+        );
+    }
 }

@@ -14,9 +14,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_stats', function (Blueprint $table) {
+        Schema::create('user_stats', function (Blueprint $table): void {
+            $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
-            ->primary()
+            ->nullable()
             ->constrained('users')
             ->cascadeOnDelete();
             $table->unsignedInteger('posts_count')
@@ -29,7 +30,6 @@ return new class extends Migration
             $table->unsignedInteger('reels_count')
             ->default(0)
             ->index();
-
             $table->timestamps();
         });
     }

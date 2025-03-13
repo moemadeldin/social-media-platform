@@ -8,8 +8,13 @@ use App\Enums\UserStatus;
 use App\Events\UserVerificationRequested;
 use App\Exceptions\PasswordException;
 use App\Exceptions\UserStatusException;
+use App\Http\Requests\ForgetPasswordRequest;
+use App\Http\Requests\VerifyRequest;
 use App\Models\User;
+use App\Notifications\PasswordChangedNotification;
 use App\Repositories\AuthRepository;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 final class AuthService
@@ -20,13 +25,23 @@ final class AuthService
     ){}
     public function register(array $data): array
     {
-        $user = $this->authRepository->create($data);
+        return DB::transaction(function () use ($data): array {
+            try {
 
-        event(new UserVerificationRequested($user));
+                $user = $this->authRepository->create($data);
+    
+                $user->profile()->create();
+                $user->stats()->create();
 
-        return $this->tokenManager->respondWithUserAndToken($user);
+                event(new UserVerificationRequested($user));
+
+                return $this->tokenManager->respondWithUserAndToken($user);
+
+            } catch (Exception $e) {
+                throw $e;
+            }
+        });
     }
-
     public function verify(array $data): array
     {
         $user = $this->authRepository->findUserByEmailOrMobileWithCode($data);
@@ -47,7 +62,7 @@ final class AuthService
             )
         );
     }
-    public function logout(User $user): void
+    public function logout(?User $user): void
     {
         $this->tokenManager->deleteAccessToken($user);
     }
@@ -76,39 +91,44 @@ final class AuthService
             throw UserStatusException::notActiveOrBlocked();
         }
     }
+    
+    public function forgetPassword(array $data): array
+    {
+        $user = $this->authRepository->findUserByEmailOrMobileOrUsername($data);
 
-    // public function forgetPassword(ForgetPasswordRequest $request)
-    // {
-    //     $user = $this->findUserByEmailOrMobileOrUsername($request);
+        event(new UserVerificationRequested($user));
 
-    //     event(new UserVerificationRequested($user));
+        return [
+            'user' => $user,
+            'token' => $this->tokenManager->generateAccessToken($user),
+        ];
+    }
 
-    //     return $user;
-    // }
+    public function checkOTP(array $data): array
+    {
+        return $this->tokenManager->respondWithUserAndToken(
+            $this->authRepository->findUserByEmailOrMobileWithCode(
+                $data)
+        );
+    }
 
-    // public function checkOTP(VerifyRequest $request)
-    // {
-    //     return $this->respondWithUserAndToken(
-    //         $this->verifyUserByEmailOrMobile(
-    //             $request)
-    //     );
-    // }
+    public function resetPassword(array $data, User $user): array
+    {
 
-    // public function resetPassword($data, $user)
-    // {
+        if (Hash::check($data['password'], $user->password)) {
+            throw PasswordException::sameAsCurrent();
+        }
 
-    //     if (Hash::check($data['password'], $user->password)) {
-    //         throw PasswordException::sameAsCurrent();
-    //     }
+        $user->update([
+            'password' => Hash::make($data['password']),
+        ]);
 
-    //     $user->update([
-    //         'password' => Hash::make($data['password']),
-    //     ]);
+        $this->tokenManager->deleteAccessToken($user);
 
-    //     $this->deleteAccessTokens($user);
+        $user->notify(new PasswordChangedNotification(config('app.admin_email')));
 
-    //     $user->notify(new PasswordChangedNotification(config('app.admin_email')));
-
-    //     return $user;
-    // }
+        return [
+            'user' => $user
+        ];
+    }
 }

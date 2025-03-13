@@ -22,9 +22,9 @@ final class UserPrivateProfileResource extends JsonResource
             'full_name' => $this->full_name,
             'profile_picture' => $this->profile_picture,
             'bio' => $this->bio,
-            'posts' => $this->posts_count,
-            'followers' => $this->followers_count,
-            'following' => $this->following_count,
+            'posts' => $this->stats->posts_count,
+            'followers' => $this->stats->followers_count,
+            'following' => $this->stats->following_count,
         ];
     }
 }

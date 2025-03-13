@@ -19,14 +19,14 @@ final class UserProfileResource extends JsonResource
         return [
             'username' => $this->username,
             'full_name' => $this->full_name,
-            'profile_picture' => $this->profile_picture,
-            'bio' => $this->bio,
-            'website' => $this->website,
-            'posts' => $this->posts_count,
-            'followers' => $this->followers_count,
-            'following' => $this->following_count,
-            'followers_list' => $this->followers->pluck('username'), // move to index method
-            'following_list' => $this->following->pluck('username'), // move to index method
+            'profile_picture' => $this->profile->profile_picture,
+            'bio' => $this->profile->bio,
+            'website' => $this->profile->website,
+            'posts' => $this->stats->posts_count,
+            'followers' => $this->stats->followers_count,
+            'following' => $this->stats->following_count,
+            'followers_list' => $this->followers->pluck('username'),
+            'following_list' => $this->following->pluck('username'), 
             'posts_list' => PostResource::collection($this->posts),
         ];
     }

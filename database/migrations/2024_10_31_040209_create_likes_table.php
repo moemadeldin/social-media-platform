@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('likes', function (Blueprint $table) {
+        Schema::create('likes', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->uuidMorphs('likable');
             $table->foreignUuid('user_id')
