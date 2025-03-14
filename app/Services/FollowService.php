@@ -8,6 +8,7 @@ use App\Enums\FollowStatus;
 use App\Exceptions\FollowException;
 use App\Models\Follower;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 final class FollowService
 {
@@ -21,16 +22,17 @@ final class FollowService
             ->where('status', FollowStatus::PENDING->value)
             ->first();
     }
+    public function getPendingFollowRequests(User $user): Collection
+    {
+        return Follower::where('user_id', $user->id)
+            ->where('status', FollowStatus::PENDING->value)
+            ->get();
+    }
 
     public function createFollowRequest(User $user, User $userToFollow): Follower
     {
         $existingRequest = $this->followRequestFinder($user, $userToFollow);
 
-    //    dd( [
-    //         'user_id' => $userToFollow->id,
-    //         'follower_id' => $user->id,
-    //         'status' => FollowStatus::PENDING->value,
-    //    ]);
         if (! $existingRequest) {
             return Follower::create([
                 'user_id' => $userToFollow->id,
@@ -40,17 +42,35 @@ final class FollowService
         }
         return $existingRequest;
     }
-    //     public function cancelFollowRequest(User $user, User $userToCancelFollow)
-    //     {
-    //        $existingRequest = $this->followRequestFinder($user, $userToCancelFollow);
+        public function cancelFollowRequest(User $user, User $userToCancelFollow): Follower|null
+        {
+           $existingRequest = $this->followRequestFinder($user, $userToCancelFollow);
 
-    //        if($existingRequest){
-    //         $existingRequest->delete();
-    //        }
-    //        return $existingRequest;
-    //    }
-
-    public function validateFollow(User $user, User $userToFollow)
+           if($existingRequest){
+            $existingRequest->delete();
+           }
+           return $existingRequest;
+       }
+       public function acceptFollowRequest(User $user, User $userToAccept): bool
+       {
+           $followRequest = $this->followRequestFinder($user, $userToAccept);
+   
+           if ($followRequest) {
+               $followRequest->update(['status' => FollowStatus::ACCEPTED->value]);
+               return true;
+           }
+           return false;
+       }
+       public function declineFollowRequest(User $user, User $userToDecline): bool
+       {
+           $followRequest = $this->followRequestFinder($user, $userToDecline);
+   
+           if ($followRequest) {
+               return $followRequest->delete();
+           }
+           return false;
+       }
+    public function validateFollow(User $user, User $userToFollow): void
     {
         if ($user->id === $userToFollow->id) {
             throw FollowException::selfFollow();
@@ -61,7 +81,7 @@ final class FollowService
         }
     }
 
-    public function validateUnFollow(User $user, User $userToUnFollow)
+    public function validateUnFollow(User $user, User $userToUnFollow): void
     {
         if ($user->id === $userToUnFollow->id) {
             throw FollowException::selfUnFollow();

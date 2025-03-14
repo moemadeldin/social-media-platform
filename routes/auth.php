@@ -35,6 +35,7 @@ Route::middleware('auth:api')->group(function (): void {
         Route::delete('/users/{username}/unfollow', 'destroy');
     });
     Route::controller(FollowRequestController::class)->group(function (): void {
+        Route::get('/follow-requests', 'pendingFollowRequests');
         Route::post('/follow-requests/{username}/accept', 'store');
         Route::post('/follow-requests/{username}/decline', 'destroy');
         // Route::get('/pending-follow-requests', 'pending');

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FollowRequestsResource;
 use App\Services\FollowService;
 use App\Services\UserProfileService;
 use App\Util\APIResponder;
+use Illuminate\Http\JsonResponse;
 
 final class FollowRequestController extends Controller
 {
@@ -20,6 +22,15 @@ final class FollowRequestController extends Controller
     {
         $this->userProfileService = $userProfileService;
         $this->followService = $followService;
+    }
+
+    public function pendingFollowRequests(): JsonResponse
+    {
+        $user = auth()->user();
+
+        $pendingRequests = $this->userProfileService->getPendingRequests($user);
+
+        return $this->successResponse(FollowRequestsResource::collection($pendingRequests), 'Pending requests fetched');
     }
 
     public function store($username)

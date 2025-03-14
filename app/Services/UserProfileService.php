@@ -9,9 +9,12 @@ use App\Enums\ProfileStatus;
 use App\Exceptions\FollowException;
 use App\Http\Resources\UserPrivateProfileResource;
 use App\Http\Resources\UserProfileResource;
+use App\Models\Follower;
 use App\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 final class UserProfileService
 {
@@ -91,9 +94,8 @@ final class UserProfileService
         return DB::transaction(function () use ($user, $username): User {
             try {
                 $userToAccept = $this->getUserByUsername($username);
-
-                $followRequest = $this->followService->createFollowRequest($user, $userToAccept);
-
+                $followRequest = $this->followService->followRequestFinder($userToAccept, $user); 
+                
                 if (! $followRequest) {
                     throw FollowException::followRequestNotFound();
                 }
@@ -101,10 +103,12 @@ final class UserProfileService
                     'status' => FollowStatus::ACCEPTED->value,
                 ]);
 
-                $user->following()->attach($userToAccept->id);
+                $user->following()->attach($userToAccept->id, [
+                    'id' => Str::uuid(),
+                    'status' => FollowStatus::ACCEPTED->value
+                ]);
                 $user->stats->increment('following_count');
                 $userToAccept->stats->increment('followers_count');
-
                 DB::commit();
 
                 return $userToAccept;
@@ -114,6 +118,7 @@ final class UserProfileService
             }
         });
     }
+
 
     public function decline($user, $username)
     {
@@ -142,5 +147,14 @@ final class UserProfileService
         }
 
         return new UserProfileResource($user);
+    }
+    public function getFollowRequestByUser(User $user): Follower|null
+    {
+        return Follower::where('user_id', $user->id)->first();
+    }
+
+    public function getPendingRequests(?User $user): Collection
+    {
+        return $this->followService->getPendingFollowRequests($user);
     }
 }
