@@ -19,8 +19,8 @@ return new class extends Migration
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->foreignUuid('media_id')
-            ->constrained('media')
-            ->cascadeOnDelete();
+                ->constrained('media')
+                ->cascadeOnDelete();
             $table->text('content')->nullable();
             $table->unsignedBigInteger('viewers_count')->default(0);
             $table->unsignedBigInteger('likes_count')->default(0);

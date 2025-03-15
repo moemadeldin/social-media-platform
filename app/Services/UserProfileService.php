@@ -41,7 +41,7 @@ final class UserProfileService
     {
         return DB::transaction(function () use ($user, $username): User {
             try {
-                // getting user 
+                // getting user
                 $userToFollow = $this->getUserByUsername($username)->load('stats');
 
                 // validate if user is followed or not
@@ -94,8 +94,8 @@ final class UserProfileService
         return DB::transaction(function () use ($user, $username): User {
             try {
                 $userToAccept = $this->getUserByUsername($username);
-                $followRequest = $this->followService->followRequestFinder($userToAccept, $user); 
-                
+                $followRequest = $this->followService->followRequestFinder($userToAccept, $user);
+
                 if (! $followRequest) {
                     throw FollowException::followRequestNotFound();
                 }
@@ -105,7 +105,7 @@ final class UserProfileService
 
                 $user->following()->attach($userToAccept->id, [
                     'id' => Str::uuid(),
-                    'status' => FollowStatus::ACCEPTED->value
+                    'status' => FollowStatus::ACCEPTED->value,
                 ]);
                 $user->stats->increment('following_count');
                 $userToAccept->stats->increment('followers_count');
@@ -119,7 +119,6 @@ final class UserProfileService
         });
     }
 
-
     public function decline($user, $username)
     {
         $followRequest = $this->followService->followRequestFinder($user, $username);
@@ -129,6 +128,16 @@ final class UserProfileService
         }
 
         return throw FollowException::followRequestNotFound();
+    }
+
+    public function getFollowRequestByUser(User $user): ?Follower
+    {
+        return Follower::where('user_id', $user->id)->first();
+    }
+
+    public function getPendingRequests(?User $user): Collection
+    {
+        return $this->followService->getPendingFollowRequests($user);
     }
 
     private function getUserByUsername($username)
@@ -147,14 +156,5 @@ final class UserProfileService
         }
 
         return new UserProfileResource($user);
-    }
-    public function getFollowRequestByUser(User $user): Follower|null
-    {
-        return Follower::where('user_id', $user->id)->first();
-    }
-
-    public function getPendingRequests(?User $user): Collection
-    {
-        return $this->followService->getPendingFollowRequests($user);
     }
 }

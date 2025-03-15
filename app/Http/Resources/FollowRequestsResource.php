@@ -20,9 +20,9 @@ final class FollowRequestsResource extends JsonResource
             'follower' => [
                 'username' => $this->follower->username,
                 'full_name' => $this->follower->full_name,
-                'profile_picture' => $this->follower->profile_picture
+                'profile_picture' => $this->follower->profile_picture,
             ],
-            'status' => $this->status
+            'status' => $this->status,
         ];
     }
 }

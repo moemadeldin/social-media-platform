@@ -7,7 +7,6 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::middleware(['throttle:60,1'])
     ->controller(AuthController::class)
     ->group(function (): void {
@@ -21,5 +20,4 @@ Route::middleware(['throttle:60,1'])
 Route::get('/users/{username}', [UserProfileController::class, 'index']);
 Route::get('/users/{username}/posts', [PostController::class, 'index']);
 
-
-require('auth.php');
+require 'auth.php';

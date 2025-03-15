@@ -1,7 +1,6 @@
 <?php
 
-
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,19 +16,19 @@ return new class extends Migration
         Schema::create('user_stats', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
-            ->nullable()
-            ->constrained('users')
-            ->cascadeOnDelete();
+                ->nullable()
+                ->constrained('users')
+                ->cascadeOnDelete();
             $table->unsignedInteger('posts_count')
-            ->default(0)
-            ->index();
+                ->default(0)
+                ->index();
             $table->unsignedInteger('following_count')->default(0)
-            ->index();
+                ->index();
             $table->unsignedInteger('followers_count')->default(0)
-            ->index();
+                ->index();
             $table->unsignedInteger('reels_count')
-            ->default(0)
-            ->index();
+                ->default(0)
+                ->index();
             $table->timestamps();
         });
     }

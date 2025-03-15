@@ -21,7 +21,6 @@ final class UserProfileController extends Controller
         $this->userProfileService = $userProfileService;
     }
 
-
     public function index(Request $request): JsonResponse
     {
         return $this->successResponse(

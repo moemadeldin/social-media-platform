@@ -51,6 +51,7 @@ final class AuthController extends Controller
         );
 
     }
+
     public function logout(): JsonResponse
     {
         $this->authService->logout(auth()->user());
@@ -58,7 +59,6 @@ final class AuthController extends Controller
         return $this->successResponse(null, AuthMessages::LOGGED_OUT->value);
     }
 
-    
     public function forgetPassword(ForgetPasswordRequest $request): JsonResponse
     {
 

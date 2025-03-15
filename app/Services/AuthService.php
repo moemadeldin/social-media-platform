@@ -8,8 +8,6 @@ use App\Enums\UserStatus;
 use App\Events\UserVerificationRequested;
 use App\Exceptions\PasswordException;
 use App\Exceptions\UserStatusException;
-use App\Http\Requests\ForgetPasswordRequest;
-use App\Http\Requests\VerifyRequest;
 use App\Models\User;
 use App\Notifications\PasswordChangedNotification;
 use App\Repositories\AuthRepository;
@@ -22,14 +20,15 @@ final class AuthService
     public function __construct(
         private readonly AuthRepository $authRepository,
         private readonly TokenManager $tokenManager
-    ){}
+    ) {}
+
     public function register(array $data): array
     {
         return DB::transaction(function () use ($data): array {
             try {
 
                 $user = $this->authRepository->create($data);
-    
+
                 $user->profile()->create();
                 $user->stats()->create();
 
@@ -42,6 +41,7 @@ final class AuthService
             }
         });
     }
+
     public function verify(array $data): array
     {
         $user = $this->authRepository->findUserByEmailOrMobileWithCode($data);
@@ -62,36 +62,12 @@ final class AuthService
             )
         );
     }
+
     public function logout(?User $user): void
     {
         $this->tokenManager->deleteAccessToken($user);
     }
 
-    private function validateUserCredentials(array $data): User
-    {
-
-        $user = $this->authRepository->findUserByEmailOrMobileOrUsername($data);
-
-        $this->validatePassword($user, $data);
-
-        $this->ensureUserIsActive($user);
-
-        return $user;
-    }
-    private function validatePassword(User $user, array $data): void
-    {
-        if (! Hash::check($data['password'], $user->password)) 
-        {
-            throw PasswordException::incorrect();
-        }
-    }
-    private function ensureUserIsActive(User $user): void
-    {
-        if ($user->status !== UserStatus::ACTIVE->value) {
-            throw UserStatusException::notActiveOrBlocked();
-        }
-    }
-    
     public function forgetPassword(array $data): array
     {
         $user = $this->authRepository->findUserByEmailOrMobileOrUsername($data);
@@ -128,7 +104,33 @@ final class AuthService
         $user->notify(new PasswordChangedNotification(config('app.admin_email')));
 
         return [
-            'user' => $user
+            'user' => $user,
         ];
+    }
+
+    private function validateUserCredentials(array $data): User
+    {
+
+        $user = $this->authRepository->findUserByEmailOrMobileOrUsername($data);
+
+        $this->validatePassword($user, $data);
+
+        $this->ensureUserIsActive($user);
+
+        return $user;
+    }
+
+    private function validatePassword(User $user, array $data): void
+    {
+        if (! Hash::check($data['password'], $user->password)) {
+            throw PasswordException::incorrect();
+        }
+    }
+
+    private function ensureUserIsActive(User $user): void
+    {
+        if ($user->status !== UserStatus::ACTIVE->value) {
+            throw UserStatusException::notActiveOrBlocked();
+        }
     }
 }

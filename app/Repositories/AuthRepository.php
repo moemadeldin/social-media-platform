@@ -12,6 +12,7 @@ final class AuthRepository
     {
         return User::create($data);
     }
+
     public function findUserByEmailOrMobileOrUsername(array $data): User
     {
         return User::where(function ($query) use ($data): void {
@@ -20,6 +21,7 @@ final class AuthRepository
                 ->orWhere('email', $data['email_or_mobile_or_username']);
         })->firstOrFail();
     }
+
     public function findUserByEmailOrMobileWithCode(array $data): User
     {
         return User::where(function ($query) use ($data): void {

@@ -22,8 +22,8 @@ return new class extends Migration
             $table->text('caption')->nullable();
             $table->string('location')->nullable();
             $table->unsignedTinyInteger('visibility')
-            ->default(PostVisibility::HIDE->value)
-            ->index();
+                ->default(PostVisibility::HIDE->value)
+                ->index();
             $table->unsignedBigInteger('likes_count')->default(0);
             $table->unsignedBigInteger('comments_count')->default(0);
             $table->timestamps();

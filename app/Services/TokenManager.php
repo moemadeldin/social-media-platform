@@ -1,7 +1,7 @@
 <?php
 
-
 declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\User;
@@ -17,6 +17,7 @@ final class TokenManager
     {
         $user->tokens()->delete();
     }
+
     public function respondWithUserAndToken(User $user): array
     {
         return [

@@ -1,7 +1,6 @@
 <?php
 
-
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use App\Enums\Gender;
 use App\Enums\ProfileStatus;
@@ -19,8 +18,8 @@ return new class extends Migration
         Schema::create('user_profiles', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
-            ->constrained('users')
-            ->cascadeOnDelete();
+                ->constrained('users')
+                ->cascadeOnDelete();
             $table->string('profile_picture')->nullable();
             $table->unsignedTinyInteger('gender')->default(Gender::PREFER_NOT_TO_SAY->value);
             $table->string('bio', 150)->nullable();

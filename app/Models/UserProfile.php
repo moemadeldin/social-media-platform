@@ -1,7 +1,6 @@
 <?php
 
-
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -12,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 final class UserProfile extends Model
 {
     use HasUuids;
+
     public $incrementing = false;
 
     protected $fillable = [

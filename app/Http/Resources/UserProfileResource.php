@@ -26,7 +26,7 @@ final class UserProfileResource extends JsonResource
             'followers' => $this->stats->followers_count,
             'following' => $this->stats->following_count,
             'followers_list' => $this->followers->pluck('username'),
-            'following_list' => $this->following->pluck('username'), 
+            'following_list' => $this->following->pluck('username'),
             'posts_list' => PostResource::collection($this->posts),
         ];
     }

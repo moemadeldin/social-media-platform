@@ -38,7 +38,6 @@ Route::middleware('auth:api')->group(function (): void {
         Route::get('/follow-requests', 'pendingFollowRequests');
         Route::post('/follow-requests/{username}/accept', 'store');
         Route::post('/follow-requests/{username}/decline', 'destroy');
-        // Route::get('/pending-follow-requests', 'pending');
     });
 
     Route::controller(PostController::class)->group(function (): void {
@@ -51,7 +50,6 @@ Route::middleware('auth:api')->group(function (): void {
         Route::post('/users/{username}/posts/{post}/media', 'update');
         Route::delete('/users/{username}/posts/{post}/media', 'destroy');
     });
-
     Route::controller(CommentController::class)->group(function (): void {
         Route::post('/users/{username}/posts/{post_id}/comment', 'store');
         Route::put('/users/{username}/posts/{post_id}/comment/{comment_id}', 'update');

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Enums\Gender;
-use App\Enums\ProfileStatus;
 use App\Enums\UserStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -27,7 +25,7 @@ return new class extends Migration
             $table->string('verification_code')->nullable();
             $table->unsignedTinyInteger('status')->default(UserStatus::INACTIVE->value);
             $table->index(['username', 'full_name', 'email', 'status']);
-            
+
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

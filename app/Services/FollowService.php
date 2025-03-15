@@ -15,13 +15,14 @@ final class FollowService
     /**
      * Create a new class instance.
      */
-    public function followRequestFinder(User $user, User $userToFollow): Follower|null
+    public function followRequestFinder(User $user, User $userToFollow): ?Follower
     {
         return Follower::where('user_id', $userToFollow->id)
             ->where('follower_id', $user->id)
             ->where('status', FollowStatus::PENDING->value)
             ->first();
     }
+
     public function getPendingFollowRequests(User $user): Collection
     {
         return Follower::where('user_id', $user->id)
@@ -40,36 +41,45 @@ final class FollowService
                 'status' => FollowStatus::PENDING->value,
             ]);
         }
+
         return $existingRequest;
     }
-        public function cancelFollowRequest(User $user, User $userToCancelFollow): Follower|null
-        {
-           $existingRequest = $this->followRequestFinder($user, $userToCancelFollow);
 
-           if($existingRequest){
+    public function cancelFollowRequest(User $user, User $userToCancelFollow): ?Follower
+    {
+        $existingRequest = $this->followRequestFinder($user, $userToCancelFollow);
+
+        if ($existingRequest) {
             $existingRequest->delete();
-           }
-           return $existingRequest;
-       }
-       public function acceptFollowRequest(User $user, User $userToAccept): bool
-       {
-           $followRequest = $this->followRequestFinder($user, $userToAccept);
-   
-           if ($followRequest) {
-               $followRequest->update(['status' => FollowStatus::ACCEPTED->value]);
-               return true;
-           }
-           return false;
-       }
-       public function declineFollowRequest(User $user, User $userToDecline): bool
-       {
-           $followRequest = $this->followRequestFinder($user, $userToDecline);
-   
-           if ($followRequest) {
-               return $followRequest->delete();
-           }
-           return false;
-       }
+        }
+
+        return $existingRequest;
+    }
+
+    public function acceptFollowRequest(User $user, User $userToAccept): bool
+    {
+        $followRequest = $this->followRequestFinder($user, $userToAccept);
+
+        if ($followRequest) {
+            $followRequest->update(['status' => FollowStatus::ACCEPTED->value]);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function declineFollowRequest(User $user, User $userToDecline): bool
+    {
+        $followRequest = $this->followRequestFinder($user, $userToDecline);
+
+        if ($followRequest) {
+            return $followRequest->delete();
+        }
+
+        return false;
+    }
+
     public function validateFollow(User $user, User $userToFollow): void
     {
         if ($user->id === $userToFollow->id) {

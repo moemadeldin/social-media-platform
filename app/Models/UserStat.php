@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 final class UserStat extends Model
 {
     use HasUuids;
+
     protected $fillable = [
         'user_id',
         'posts_count',
@@ -18,7 +19,6 @@ final class UserStat extends Model
         'followers_count',
         'reels_count',
     ];
-
 
     public function user(): BelongsTo
     {
