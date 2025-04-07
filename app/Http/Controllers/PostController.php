@@ -20,8 +20,8 @@ final class PostController extends Controller
         $user = User::where('username', $username)->firstOrFail();
 
         $posts = $user->posts()
-        ->orderBy('created_at', 'desc')
-        ->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return $this->successResponse(PostResource::collection($posts), 'Posts');
     }
