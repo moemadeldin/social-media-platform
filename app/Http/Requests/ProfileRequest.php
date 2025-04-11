@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Enums\Gender;
 use App\Enums\ProfileStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -33,10 +34,10 @@ final class ProfileRequest extends FormRequest
             'email' => ['nullable', 'email:rfc,dns', 'unique:users,email'],
             'mobile' => ['nullable', 'string', 'max:11', 'unique:users,mobile'],
             'bio' => ['nullable', 'string'],
-            'gender' => ['nullable', 'digits:1'],
+            'gender' => ['nullable', 'digits:1', Rule::in(Gender::cases())],
             'website' => ['nullable', 'string'],
             'profile_picture' => ['nullable', 'image', 'max:2048'],
-            'profile_status' => ['nullable', 'integer', Rule::in(array_map(fn ($case) => $case->value, ProfileStatus::cases()))],
+            'profile_status' => ['nullable', 'digits:1', Rule::in(ProfileStatus::cases())],
         ];
     }
 }

@@ -27,6 +27,7 @@ Route::middleware('auth:api')->group(function (): void {
     Route::controller(ProfileController::class)->group(function (): void {
         Route::get('/{username}', 'index');
         Route::put('/accounts/edit', 'update');
+        Route::post('/accounts/edit', 'update');
         Route::delete('/accounts/edit', 'destroy');
     });
 

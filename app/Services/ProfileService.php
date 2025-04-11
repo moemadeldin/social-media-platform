@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Exceptions\PasswordException;
+use App\Models\User;
 use App\Notifications\PasswordChangedNotification;
 use App\Notifications\UserDeletedNotification;
 use Illuminate\Support\Arr;
@@ -13,22 +14,17 @@ use Illuminate\Support\Facades\Storage;
 
 final class ProfileService
 {
-    public function updateProfile($data, $user)
+    public function updateProfile(array $data, User $user): User
     {
-
         if (isset($data['profile_picture'])) {
             $this->handleProfilePictureUpdate($user, $data['profile_picture']);
         }
-
-        $user->update(Arr::except($data, ['current_password', 'password', 'password_confirmation', 'profile_picture']));
+        $user->profile()->update(Arr::except($data, ['current_password', 'password', 'password_confirmation', 'profile_picture']));
 
         if (isset($data['current_password']) && isset($data['password'])) {
             $this->changePassword($user, $data);
-
             $user->notify(new PasswordChangedNotification(config('app.admin_email')));
-
         }
-
         return $user;
     }
 

@@ -20,11 +20,11 @@ final class ProfileResource extends JsonResource
             'username' => $this->username,
             'full_name' => $this->full_name,
             'email' => $this->email,
-            'profile_picture' => $this->profile_picture,
-            'gender' => $this->gender,
-            'bio' => $this->bio,
-            'website' => $this->website,
-            'mobile' => $this->mobile,
+            'profile_picture' => $this->profile->profile_picture,
+            'gender' => $this->profile->gender->label(),
+            'bio' => $this->profile->bio,
+            'website' => $this->profile->website,
+            'mobile' => $this->profile->mobile,
         ];
     }
 }
