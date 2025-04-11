@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateCommentRequest;
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\User;
 use App\Util\APIResponder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,26 +16,23 @@ final class CommentController extends Controller
 {
     use APIResponder;
 
-    public function store(CreateCommentRequest $request): JsonResponse
+    public function store(CreateCommentRequest $request, User $user, Post $post): JsonResponse
     {
-        $user = auth()->user();
+        $user = User::where('username', $user->username)->firstOrFail();
 
-        $postToComment = Post::findOrFail($request->post_id);
+        $comment = $post->comments()->create([
+            'content' => $request->safe()->content,
+            'user_id' => auth()->id()
+        ]);
 
-        $comment = Comment::create(array_merge($request->validated(), [
-            'user_id' => $user->id,
-            'post_id' => $postToComment->id,
-        ]));
-
-        $postToComment->increment('comments_count');
+        $post->increment('comments_count');
 
         return $this->successResponse($comment, 'Commented Successfully!');
     }
 
-    public function update(CreateCommentRequest $request): JsonResponse
+    public function update(CreateCommentRequest $request, User $user, Post $post, Comment $comment): JsonResponse
     {
-
-        $comment = Comment::findOrFail($request->comment_id);
+        $user = User::where('username', $user->username)->firstOrFail();
 
         $comment->update($request->validated());
 
@@ -42,16 +40,19 @@ final class CommentController extends Controller
 
     }
 
-    public function destroy(Request $request): JsonResponse
-    {
-        $post = Post::findOrFail($request->post_id);
+    // public function destroy(User $user, Post $post, Comment $comment): JsonResponse
+    // {
+    //     /**
+    //      * TODO only the post/comment owner can do this
+    //      */
+    //     $post = Post::findOrFail($request->post_id);
 
-        $comment = Comment::findOrFail($request->comment_id);
+    //     $comment = Comment::findOrFail($request->comment_id);
 
-        $comment->delete();
+    //     $comment->delete();
 
-        $post->decrement('comments_count');
+    //     $post->decrement('comments_count');
 
-        return $this->successResponse($comment, 'Comment deleted Successfully!');
-    }
+    //     return $this->successResponse($comment, 'Comment deleted Successfully!');
+    // }
 }

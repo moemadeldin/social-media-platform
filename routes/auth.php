@@ -53,8 +53,8 @@ Route::middleware('auth:api')->group(function (): void {
         Route::delete('/{username}/posts/{post}/media', 'destroy');
     });
     Route::controller(CommentController::class)->group(function (): void {
-        Route::post('/{username}/posts/{post_id}/comment', 'store');
-        Route::put('/{username}/posts/{post_id}/comment/{comment_id}', 'update');
+        Route::post('/posts/{user:username}/{post}/comment', 'store');
+        Route::put('/posts/{user:username}/{post}/comment/{comment}', 'update');
         Route::delete('/{username}/posts/{post_id}/comment/{comment_id}', 'destroy');
     });
     Route::controller(ReplyController::class)->group(function (): void {
