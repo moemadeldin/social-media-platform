@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Models\User;
@@ -15,9 +16,9 @@ final class PostController extends Controller
 {
     use APIResponder;
 
-    public function index($username): JsonResponse
+    public function index(User $user): JsonResponse
     {
-        $user = User::where('username', $username)->firstOrFail();
+        $user = User::where('username', $user->username)->firstOrFail();
 
         $posts = $user->posts()
             ->orderBy('created_at', 'desc')
@@ -30,38 +31,29 @@ final class PostController extends Controller
     {
         $user = auth()->user();
 
-        $post = Post::create(array_merge($request->validated(), ['user_id' => $user->id]));
+        $post = $user->posts()->create($request->validated());
 
-        $user->increment('posts_count');
+        $user->stats()->increment('posts_count');
 
         return $this->successResponse($post, 'Post created successfully');
     }
 
-    public function update(CreatePostRequest $request, $username, Post $post): JsonResponse
+    public function update(UpdatePostRequest $request, User $user, Post $post): JsonResponse
     {
-        $user = User::where('username', $username)->firstOrFail();
-
-        if ($post->user_id !== $user->id) {
-            return $this->failedResponse('You cannot update this post');
-        }
+        $user = User::where('username', $user->username)->firstOrFail();
 
         $post->update($request->validated());
 
         return $this->successResponse($post, 'Post updated successfully!');
-
     }
 
-    public function destroy($username, Post $post): JsonResponse
+    public function destroy(UpdatePostRequest $request, User $user, Post $post): JsonResponse
     {
-        $user = User::where('username', $username)->firstOrFail();
-
-        if ($post->user_id !== $user->id) {
-            return $this->failedResponse('You cannot delete this post');
-        }
+        $user = User::where('username', $user->username)->firstOrFail();
 
         $post->delete();
 
-        $user->decrement('posts_count');
+        $user->stats()->decrement('posts_count');
 
         return $this->successResponse($post, 'Post deleted successfully!');
 

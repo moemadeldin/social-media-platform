@@ -42,10 +42,10 @@ Route::middleware('auth:api')->group(function (): void {
     });
 
     Route::controller(PostController::class)->group(function (): void {
-        Route::get('/my-posts', 'index');
-        Route::post('/{username}/posts', 'store');
-        Route::put('/{username}/posts/{post}', 'update');
-        Route::delete('/{username}/posts/{post}', 'destroy');
+        Route::get('/posts/{user:username}', 'index');
+        Route::post('/posts', 'store');
+        Route::put('/posts/{user:username}/{post}', 'update');
+        Route::delete('/posts/{user:username}/{post}', 'destroy');
     });
     Route::controller(MediaController::class)->group(function (): void {
         Route::post('/{username}/posts/{post}/media', 'store');

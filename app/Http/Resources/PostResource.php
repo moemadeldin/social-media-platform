@@ -21,7 +21,7 @@ final class PostResource extends JsonResource
             'caption' => $this->caption,
             'collaborator' => $this->collaborators,
             'location' => $this->location,
-            'visibility' => $this->visibility,
+            'visibility' => $this->visibility->label(),
             'likes_count' => $this->likes_count,
             'likes' => $this->likes->pluck('user.username'),
             'comments_count' => $this->comments_count,

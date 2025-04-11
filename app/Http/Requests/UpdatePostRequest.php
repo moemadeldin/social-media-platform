@@ -8,14 +8,16 @@ use App\Enums\PostVisibility;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-final class CreatePostRequest extends FormRequest
+final class UpdatePostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        $post = $this->route('post');
+
+        return $post && $this->user()->id === $post->user_id;    
     }
 
     /**
@@ -27,7 +29,7 @@ final class CreatePostRequest extends FormRequest
     {
         return [
             'caption' => ['nullable', 'string'],
-            'visibility' => ['required', 'digits:1', Rule::in(PostVisibility::cases())],
+            'visibility' => ['nullable', 'digits:1', Rule::in(PostVisibility::cases())],
             'collaborator' => ['nullable', 'string'],
             'location' => ['nullable', 'string'],
             'tags' => ['nullable', 'string'],

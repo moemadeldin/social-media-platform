@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\PostVisibility;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,7 +24,9 @@ final class Post extends Model
         'likes_count',
         'comments_count',
     ];
-
+    protected $casts = [
+        'visibility' => PostVisibility::class
+    ];
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
