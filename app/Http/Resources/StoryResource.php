@@ -18,7 +18,7 @@ final class StoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'stories' => $this->story,
+            'stories' => $this->user->stories,
         ];
     }
 }

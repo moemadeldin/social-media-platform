@@ -18,7 +18,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 final class User extends Authenticatable
 {
-    public const NOTE_EXPIRE_DATE = 24;
+    public const DEFAULT_EXPIRE_DATE = 24;
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, HasUuids, Notifiable, SoftDeletes;
 
@@ -97,10 +97,14 @@ final class User extends Authenticatable
         return $this->hasOne(UserStat::class);
     }
 
-    public function stories(): BelongsToMany
+    public function stories(): HasMany
     {
-        return $this->belongsToMany(Story::class, 'story_viewers', 'user_id', 'story_id');
+        return $this->hasMany(Story::class);
     }
+    // public function stories(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Story::class, 'story_viewers', 'user_id', 'story_id');
+    // }
 
     public function note(): HasOne
     {

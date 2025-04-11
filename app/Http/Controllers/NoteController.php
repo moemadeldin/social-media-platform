@@ -33,10 +33,9 @@ final class NoteController extends Controller
      */
     public function store(CreateNoteRequest $request, User $user): JsonResponse
     {   
-        
         $note = $user->note()->create([
             'content' => $request->safe()->content,
-            'expires_at' => Carbon::now()->addHours(User::NOTE_EXPIRE_DATE)
+            'expires_at' => Carbon::now()->addHours(User::DEFAULT_EXPIRE_DATE)
         ]);
         return $this->successResponse($note, 'Note has been added successfully!');
     }

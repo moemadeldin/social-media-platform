@@ -66,9 +66,10 @@ Route::middleware('auth:api')->group(function (): void {
         Route::post('/like/{model}/{id}', 'store');
     });
     Route::controller(StoryController::class)->group(function (): void {
-        Route::get('/{username}/stories', 'index');
-        Route::post('/{username}/story', 'store');
-        Route::delete('/{username}/stories/{story}', 'destroy');
+        Route::get('/stories', 'index');
+        Route::post('/stories', 'store');
+        Route::put('/stories/{user:username}/{story}', 'update');
+        Route::delete('/stories/{user:username}/{story}', 'destroy');
     });
     Route::controller(NoteController::class)->group(function (): void {
         Route::get('/notes/{user:username}', 'index');

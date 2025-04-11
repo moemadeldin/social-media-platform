@@ -19,9 +19,9 @@ final class StoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index($username): JsonResponse
+    public function index(): JsonResponse
     {
-        $user = User::where('username', $username)->firstOrFail();
+        $user = auth()->user();
 
         $stories = $user->stories()->orderBy('created_at', 'desc')->get();
 
@@ -31,25 +31,29 @@ final class StoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateStoryRequest $request)
+    public function store(CreateStoryRequest $request): JsonResponse
     {
         $user = auth()->user();
-        $story = Story::create(array_merge($request->validated(), [
-            'user_id' => $user->id,
-            'expires_at' => Carbon::now()->addHours(24),
-        ]));
+
+        $story = $user->stories()->create([
+            'content' => $request->safe()->content,
+            'expires_at' => Carbon::now()->addHours(User::DEFAULT_EXPIRE_DATE)
+        ]);
 
         return $this->successResponse($story, 'Story has been added successfully!');
     }
+    public function update(CreateStoryRequest $request, User $user, Story $story): JsonResponse
+    {
+        $story->update($request->validated());
 
+        return $this->successResponse($story, 'Story has been updated successfully!');
+    }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($username, $id)
+    public function destroy(User $user, Story $story): JsonResponse
     {
-        $user = auth()->user();
-
-        $story = Story::findOrFail($id);
+        $user = User::where('username', $user->username)->firstOrFail();
 
         $story->delete();
 
