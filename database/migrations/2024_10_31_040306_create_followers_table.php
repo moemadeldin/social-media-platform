@@ -17,9 +17,11 @@ return new class extends Migration
         Schema::create('followers', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
+                ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->foreignUuid('follower_id')
+                ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->unsignedTinyInteger('status')->default(FollowStatus::PENDING->value);

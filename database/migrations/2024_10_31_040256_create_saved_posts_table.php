@@ -16,9 +16,11 @@ return new class extends Migration
         Schema::create('saved_posts', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
+                ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->foreignUuid('post_id')
+                ->nullable()
                 ->constrained('posts')
                 ->cascadeOnDelete();
             $table->unique(['post_id', 'user_id']);

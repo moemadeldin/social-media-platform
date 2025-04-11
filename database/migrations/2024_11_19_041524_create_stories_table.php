@@ -16,9 +16,11 @@ return new class extends Migration
         Schema::create('stories', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
+                ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->foreignUuid('media_id')
+                ->nullable()
                 ->constrained('media')
                 ->cascadeOnDelete();
             $table->text('content')->nullable();

@@ -18,6 +18,7 @@ return new class extends Migration
         Schema::create('user_profiles', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
+                ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->string('profile_picture')->nullable();

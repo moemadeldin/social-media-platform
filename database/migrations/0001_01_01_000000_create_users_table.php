@@ -17,15 +17,14 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             // auth
-            $table->string('username');
-            $table->string('full_name');
+            $table->string('username')->nullable();
+            $table->string('full_name')->nullable();
             $table->string('email')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->string('mobile')->nullable();
             $table->string('verification_code')->nullable();
             $table->unsignedTinyInteger('status')->default(UserStatus::INACTIVE->value);
             $table->index(['username', 'full_name', 'email', 'status']);
-
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

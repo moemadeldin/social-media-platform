@@ -16,9 +16,10 @@ return new class extends Migration
         Schema::create('notes', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
+                ->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
-            $table->string('content');
+            $table->string('content')->nullable();
             $table->unsignedInteger('likes_count')->default(0);
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();

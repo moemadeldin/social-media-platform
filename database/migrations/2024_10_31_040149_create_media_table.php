@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('media', function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->uuidMorphs('mediable');
-            $table->string('path');
+            $table->string('path')->nullable();
             $table->enum('type', [MediaType::IMAGE->value, MediaType::VIDEO->value]);
             $table->unsignedInteger('order')->default(1);
             $table->timestamps();
