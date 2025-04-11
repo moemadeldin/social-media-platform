@@ -8,7 +8,9 @@ use App\Http\Requests\ReplyRequest;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Reply;
+use App\Models\User;
 use App\Util\APIResponder;
+use Illuminate\Http\JsonResponse;
 
 final class ReplyController extends Controller
 {
@@ -25,19 +27,16 @@ final class ReplyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ReplyRequest $request, $postId, $commentId)
+    public function store(ReplyRequest $request, User $user, Post $post, Comment $comment): JsonResponse
     {
-        $user = auth()->user();
+        $user = User::where('username', $user->username)->firstOrFail();
 
-        $post = Post::findOrFail($postId);
-
-        $comment = Comment::findOrFail($commentId);
-
-        $reply = Reply::create(array_merge($request->validated(), [
-            'user_id' => $user->id,
+        $reply = $comment->replies()->create([
             'post_id' => $post->id,
-            'comment_id' => $comment->id,
-        ]));
+            'user_id' => auth()->id(),
+            'content' => $request->safe()->content,
+        ]);
+
         $comment->increment('replies_count');
 
         return $this->successResponse($reply, 'Reply added successfully!');
@@ -46,15 +45,14 @@ final class ReplyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ReplyRequest $request, $postId, $commentId, $replyId)
+    public function update(
+        ReplyRequest $request,
+        User $user, Post $post,
+        Comment $comment,
+        Reply $reply
+        ): JsonResponse
     {
-        $user = auth()->user();
-
-        $post = Post::findOrFail($postId);
-
-        $comment = Comment::findOrFail($commentId);
-
-        $reply = Reply::findOrFail($replyId);
+        $user = User::where('username', $user->username)->firstOrFail();
 
         $reply->update($request->validated());
 

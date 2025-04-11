@@ -10,13 +10,15 @@ use App\Models\Note;
 use App\Models\Post;
 use App\Models\Reply;
 use App\Models\Story;
+use App\Models\User;
 use App\Util\APIResponder;
+use Illuminate\Database\Eloquent\Model;
 
 final class LikeService
 {
     use APIResponder;
 
-    public function toggleLike($user, $model, $id)
+    public function toggleLike(User $user, Model|string $model, string|int $id)
     {
         $modelClass = $this->getModelClass($model);
 

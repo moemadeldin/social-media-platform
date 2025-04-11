@@ -58,10 +58,9 @@ Route::middleware('auth:api')->group(function (): void {
         Route::delete('/{username}/posts/{post_id}/comment/{comment_id}', 'destroy');
     });
     Route::controller(ReplyController::class)->group(function (): void {
-        Route::post('/{postId}/comments/{commentId}/replies', 'store');
-        Route::put('/{postId}/comments/{commentId}/replies/{replyId}', 'update');
+        Route::post('/posts/{user:username}/{post}/{comment}/replies', 'store');
+        Route::put('/posts/{user:username}/{post}/{comment}/replies/{reply}', 'update');
         Route::delete('/{postId}/comments/{commentId}/replies/{replyId}', 'destroy');
-        Route::delete('/{username}/post/{postId}/comments/{commentId}/replies/{replyId}', 'destroy');
     });
     Route::controller(LikeController::class)->group(function (): void {
         Route::post('/like/{model}/{id}', 'store');
@@ -72,8 +71,9 @@ Route::middleware('auth:api')->group(function (): void {
         Route::delete('/{username}/stories/{story}', 'destroy');
     });
     Route::controller(NoteController::class)->group(function (): void {
-        Route::get('/{username}/notes', 'index');
-        Route::post('/{username}/note', 'store');
-        Route::delete('/{username}/notes/{note}', 'destroy');
+        Route::get('/notes/{user:username}', 'index');
+        Route::post('/notes/{user:username}', 'store');
+        Route::put('/notes/{user:username}/{note}', 'update');
+        Route::delete('/notes/{user:username}/{note}', 'destroy');
     });
 });

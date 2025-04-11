@@ -24,7 +24,7 @@ final class ReplyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reply' => ['nullable', 'string'],
+            'content' => ['required', 'string'],
         ];
     }
 }

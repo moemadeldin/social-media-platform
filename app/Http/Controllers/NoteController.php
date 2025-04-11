@@ -31,28 +31,28 @@ final class NoteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateNoteRequest $request)
-    {
-        $user = auth()->user();
-
-        $note = Note::create(array_merge($request->validated(), [
-            'user_id' => $user->id,
-            'expires_at' => Carbon::now()->addHours(24),
-        ]));
-
+    public function store(CreateNoteRequest $request, User $user): JsonResponse
+    {   
+        
+        $note = $user->note()->create([
+            'content' => $request->safe()->content,
+            'expires_at' => Carbon::now()->addHours(User::NOTE_EXPIRE_DATE)
+        ]);
         return $this->successResponse($note, 'Note has been added successfully!');
+    }
+    public function update(CreateNoteRequest $request, User $user, Note $note): JsonResponse
+    {
+        $note->update($request->validated());
+
+        return $this->successResponse($note, 'Note has been updated successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($username, $id)
+    public function destroy(User $user, Note $note): JsonResponse
     {
-        $user = auth()->user();
-
-        $note = Note::findOrFail($id);
-
-        $note->delete();
+        $user->note()->delete();
 
         return $this->successResponse($note, 'Note has been deleted');
     }

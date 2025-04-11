@@ -17,7 +17,7 @@ final class PostResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'post' => $this->id,
+            'post_id' => $this->id,
             'caption' => $this->caption,
             'collaborator' => $this->collaborators,
             'location' => $this->location,
@@ -27,13 +27,15 @@ final class PostResource extends JsonResource
             'comments_count' => $this->comments_count,
             'post_comments' => $this->comments->map(function ($comment) {
                 return [
-                    $comment->user->username => $comment->comment,
+                    "username" => $this->user->username,
+                    "content" => $comment->content,
                     'comment_likes_count' => $comment->likes_count,
                     'comment_likes' => $comment->likes->pluck('user.username'),
                     'replies_count' => $comment->replies_count,
                     'replies' => $comment->replies->map(function ($reply) {
                         return [
-                            $reply->user->username => $reply->reply,
+                            "username" => $this->user->username,
+                            'content' => $reply->content,
                             'reply_likes_count' => $reply->likes_count,
                             'reply_likes' => $reply->likes->pluck('user.username'),
                         ];
