@@ -62,15 +62,14 @@ final class ReplyController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($postId, $commentId, $replyId)
+    public function destroy(User $user, Post $post, Comment $comment, Reply $reply): JsonResponse
     {
-        $user = auth()->user();
+        $user = User::where('username', $user->username)->firstOrFail();
 
-        $post = Post::findOrFail($postId);
-
-        $comment = Comment::findOrFail($commentId);
-
-        $reply = Reply::findOrFail($replyId);
+        if(auth()->id() !== $post->user_id && auth()->id() !== $reply->user_id) 
+        {
+            return $this->failedResponse('No Permission');
+        }
 
         $reply->delete();
 

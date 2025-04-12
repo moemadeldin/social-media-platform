@@ -40,19 +40,19 @@ final class CommentController extends Controller
 
     }
 
-    // public function destroy(User $user, Post $post, Comment $comment): JsonResponse
-    // {
-    //     /**
-    //      * TODO only the post/comment owner can do this
-    //      */
-    //     $post = Post::findOrFail($request->post_id);
+    public function destroy(User $user, Post $post, Comment $comment): JsonResponse
+    {
+        $user = User::where('username', $user->username)->firstOrFail();
 
-    //     $comment = Comment::findOrFail($request->comment_id);
+        if(auth()->id() !== $post->user_id && auth()->id() !== $comment->user_id) 
+        {
+            return $this->failedResponse('No Permission');
+        }
 
-    //     $comment->delete();
+        $comment->delete();
 
-    //     $post->decrement('comments_count');
+        $post->decrement('comments_count');
 
-    //     return $this->successResponse($comment, 'Comment deleted Successfully!');
-    // }
+        return $this->successResponse($comment, 'Comment deleted Successfully!');
+    }
 }

@@ -55,12 +55,12 @@ Route::middleware('auth:api')->group(function (): void {
     Route::controller(CommentController::class)->group(function (): void {
         Route::post('/posts/{user:username}/{post}/comment', 'store');
         Route::put('/posts/{user:username}/{post}/comment/{comment}', 'update');
-        Route::delete('/{username}/posts/{post_id}/comment/{comment_id}', 'destroy');
+        Route::delete('/posts/{user:username}/{post}/comment/{comment}', 'destroy');
     });
     Route::controller(ReplyController::class)->group(function (): void {
         Route::post('/posts/{user:username}/{post}/{comment}/replies', 'store');
         Route::put('/posts/{user:username}/{post}/{comment}/replies/{reply}', 'update');
-        Route::delete('/{postId}/comments/{commentId}/replies/{replyId}', 'destroy');
+        Route::delete('/posts/{user:username}/{post}/{comment}/replies/{reply}', 'destroy');
     });
     Route::controller(LikeController::class)->group(function (): void {
         Route::post('/like/{model}/{id}', 'store');
