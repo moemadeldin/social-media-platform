@@ -25,7 +25,7 @@ Route::middleware('auth:api')->group(function (): void {
     });
 
     Route::controller(ProfileController::class)->group(function (): void {
-        Route::get('/{username}', 'index');
+        Route::get('/accounts/{username}', 'index');
         Route::put('/accounts/edit', 'update');
         Route::post('/accounts/edit', 'update');
         Route::delete('/accounts/edit', 'destroy');
@@ -66,8 +66,8 @@ Route::middleware('auth:api')->group(function (): void {
         Route::post('/like/{model}/{id}', 'store');
     });
     Route::controller(StoryController::class)->group(function (): void {
-        Route::get('/stories', 'index');
-        Route::post('/stories', 'store');
+        Route::get('/stories/{user:username}', 'index');
+        Route::post('/stories/{user:username}', 'store');
         Route::put('/stories/{user:username}/{story}', 'update');
         Route::delete('/stories/{user:username}/{story}', 'destroy');
     });

@@ -19,9 +19,9 @@ final class StoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(User $user): JsonResponse
     {
-        $user = auth()->user();
+        $user = User::where('username', $user->username)->firstOrFail();
 
         $stories = $user->stories()->orderBy('created_at', 'desc')->get();
 

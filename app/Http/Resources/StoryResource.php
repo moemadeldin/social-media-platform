@@ -17,8 +17,14 @@ final class StoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'stories' => $this->user->stories,
+            'username' => $this->user->username,
+            'media_id' => $this->media_id,
+            'content' => $this->content,
+            'viewers_count' => $this->viewers_count,
+            'likes_count' => $this->likes_count,
+            'expires_at' => $this->expires_at,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

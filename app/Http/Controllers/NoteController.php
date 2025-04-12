@@ -19,13 +19,13 @@ final class NoteController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index($username): JsonResponse
+    public function index(User $user): JsonResponse
     {
-        $user = User::where('username', $username)->firstOrFail();
+        $user = User::where('username', $user->username)->firstOrFail();
 
-        $stories = $user->notes()->get();
+        $notes = $user->note()->get();
 
-        return $this->successResponse(NoteResource::collection($stories), 'Note');
+        return $this->successResponse(NoteResource::collection($notes), 'Note');
     }
 
     /**
