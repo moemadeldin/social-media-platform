@@ -25,6 +25,7 @@ final class ProfileService
             $this->changePassword($user, $data);
             $user->notify(new PasswordChangedNotification(config('app.admin_email')));
         }
+
         return $user;
     }
 

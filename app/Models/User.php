@@ -18,9 +18,10 @@ use Laravel\Sanctum\HasApiTokens;
 
 final class User extends Authenticatable
 {
-    public const DEFAULT_EXPIRE_DATE = 24;
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, HasUuids, Notifiable, SoftDeletes;
+
+    public const DEFAULT_EXPIRE_DATE = 24;
 
     /**
      * The attributes that are mass assignable.

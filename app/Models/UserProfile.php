@@ -23,9 +23,11 @@ final class UserProfile extends Model
         'website',
         'profile_status',
     ];
+
     protected $casts = [
         'gender' => Gender::class,
     ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

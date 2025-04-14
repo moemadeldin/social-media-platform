@@ -10,7 +10,6 @@ use App\Models\Post;
 use App\Models\User;
 use App\Util\APIResponder;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 final class CommentController extends Controller
 {
@@ -22,7 +21,7 @@ final class CommentController extends Controller
 
         $comment = $post->comments()->create([
             'content' => $request->safe()->content,
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
         ]);
 
         $post->increment('comments_count');
@@ -44,8 +43,7 @@ final class CommentController extends Controller
     {
         $user = User::where('username', $user->username)->firstOrFail();
 
-        if(auth()->id() !== $post->user_id && auth()->id() !== $comment->user_id) 
-        {
+        if (auth()->id() !== $post->user_id && auth()->id() !== $comment->user_id) {
             return $this->failedResponse('No Permission');
         }
 

@@ -27,14 +27,14 @@ final class PostResource extends JsonResource
             'comments_count' => $this->comments_count,
             'post_comments' => $this->comments->map(function ($comment) {
                 return [
-                    "username" => $this->user->username,
-                    "content" => $comment->content,
+                    'username' => $this->user->username,
+                    'content' => $comment->content,
                     'comment_likes_count' => $comment->likes_count,
                     'comment_likes' => $comment->likes->pluck('user.username'),
                     'replies_count' => $comment->replies_count,
                     'replies' => $comment->replies->map(function ($reply) {
                         return [
-                            "username" => $this->user->username,
+                            'username' => $this->user->username,
                             'content' => $reply->content,
                             'reply_likes_count' => $reply->likes_count,
                             'reply_likes' => $reply->likes->pluck('user.username'),

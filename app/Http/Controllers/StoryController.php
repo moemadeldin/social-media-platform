@@ -37,17 +37,19 @@ final class StoryController extends Controller
 
         $story = $user->stories()->create([
             'content' => $request->safe()->content,
-            'expires_at' => Carbon::now()->addHours(User::DEFAULT_EXPIRE_DATE)
+            'expires_at' => Carbon::now()->addHours(User::DEFAULT_EXPIRE_DATE),
         ]);
 
         return $this->successResponse($story, 'Story has been added successfully!');
     }
+
     public function update(CreateStoryRequest $request, User $user, Story $story): JsonResponse
     {
         $story->update($request->validated());
 
         return $this->successResponse($story, 'Story has been updated successfully!');
     }
+
     /**
      * Remove the specified resource from storage.
      */

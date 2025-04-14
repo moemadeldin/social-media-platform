@@ -17,7 +17,7 @@ final class UpdatePostRequest extends FormRequest
     {
         $post = $this->route('post');
 
-        return $post && $this->user()->id === $post->user_id;    
+        return $post && $this->user()->id === $post->user_id;
     }
 
     /**

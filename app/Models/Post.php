@@ -24,9 +24,11 @@ final class Post extends Model
         'likes_count',
         'comments_count',
     ];
+
     protected $casts = [
-        'visibility' => PostVisibility::class
+        'visibility' => PostVisibility::class,
     ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

@@ -8,6 +8,7 @@ enum FollowStatus: int
 {
     case PENDING = 0;
     case ACCEPTED = 1;
+
     public function label(): string
     {
         return match ($this) {

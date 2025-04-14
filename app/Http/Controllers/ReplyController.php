@@ -50,8 +50,7 @@ final class ReplyController extends Controller
         User $user, Post $post,
         Comment $comment,
         Reply $reply
-        ): JsonResponse
-    {
+    ): JsonResponse {
         $user = User::where('username', $user->username)->firstOrFail();
 
         $reply->update($request->validated());
@@ -66,8 +65,7 @@ final class ReplyController extends Controller
     {
         $user = User::where('username', $user->username)->firstOrFail();
 
-        if(auth()->id() !== $post->user_id && auth()->id() !== $reply->user_id) 
-        {
+        if (auth()->id() !== $post->user_id && auth()->id() !== $reply->user_id) {
             return $this->failedResponse('No Permission');
         }
 
