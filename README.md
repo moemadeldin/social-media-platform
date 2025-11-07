@@ -1,66 +1,181 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<p align="center"><b>Social Media Platform</b> — Laravel 11 API with Sanctum, Vite, and Tailwind</p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This repository contains a social media platform backend built with Laravel 11 (PHP 8.2) and Sanctum for API authentication. It provides endpoints for user registration and authentication (with email OTP verification), user profiles, posts with media, comments and replies, likes, following and follow-requests, stories, and notes. Frontend assets are powered by Vite and Tailwind CSS for any Blade-driven UI.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.2, Laravel 11
+- Laravel Sanctum (token-based API auth)
+- Vite 5, Tailwind CSS, PostCSS
+- SQLite (default) — can be switched to MySQL/PostgreSQL via `.env`
+- PHPUnit for tests, Laravel Pint for code style
+- Queues for email/OTP delivery
 
-## Learning Laravel
+## Project Structure (high level)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- `app/Http/Controllers` — API controllers for auth, posts, profiles, media, comments, likes, stories, notes
+- `app/Models` — Eloquent models (User, Post, Comment, Reply, Like, Follower, Story, Note, Media, SavedPost, etc.)
+- `app/Services` — domain services (Auth, Follow, Like, Profile, UserProfile, Token)
+- `routes/api.php` and `routes/auth.php` — public and authenticated API routes
+- `database/migrations` — schema for users, profiles, posts, media, comments, likes, followers, stories, notes
+- `resources/` — Blade view(s), JS/CSS with Vite/Tailwind
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Requirements
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP >= 8.2
+- Composer
+- Node.js >= 18 (Node 20+ recommended) and npm
+- SQLite (default) or another database of your choice
 
-## Laravel Sponsors
+## Quick Start
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1) Install PHP and JS dependencies:
 
-### Premium Partners
+```bash
+composer install
+npm install
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+2) Environment config:
 
-## Contributing
+- Copy `.env.example` to `.env` (if `.env.example` is missing, create `.env` and set the variables below).
+- Generate app key and link storage:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+php artisan key:generate
+php artisan storage:link
+```
 
-## Code of Conduct
+3) Database:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- SQLite is supported out of the box. Ensure `database/database.sqlite` exists (it may already be present). If not, create it:
 
-## Security Vulnerabilities
+```bash
+mkdir -p database
+type NUL > database/database.sqlite  # Windows
+# or: touch database/database.sqlite  # macOS/Linux
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- Run migrations:
+
+```bash
+php artisan migrate
+```
+
+4) Start the app:
+
+- Option A (convenient dev runner with server, queue, logs, and Vite):
+
+```bash
+composer run dev
+```
+
+- Option B (run services separately):
+
+```bash
+php artisan serve
+php artisan queue:listen --tries=1
+npm run dev
+```
+
+5) Open the app:
+
+- API base URL: `http://127.0.0.1:8000`
+- Example public endpoints: `GET /api/{username}`, `GET /api/{username}/posts`
+
+## Environment Variables
+
+Minimum useful settings in `.env`:
+
+- `APP_NAME=SocialMedia`
+- `APP_ENV=local`
+- `APP_KEY=...` (generated by `php artisan key:generate`)
+- `APP_URL=http://127.0.0.1:8000`
+- `DB_CONNECTION=sqlite` (or `mysql`/`pgsql` with corresponding host/user/pass)
+- `QUEUE_CONNECTION=database` (or `sync` for local quick start)
+- Mail (for OTP/verification):
+  - `MAIL_MAILER=smtp`
+  - `MAIL_HOST=...`
+  - `MAIL_PORT=...`
+  - `MAIL_USERNAME=...`
+  - `MAIL_PASSWORD=...`
+  - `MAIL_ENCRYPTION=tls`
+  - `MAIL_FROM_ADDRESS=...`
+  - `MAIL_FROM_NAME="${APP_NAME}"`
+
+## API Overview
+
+Public (rate-limited):
+
+- `POST /api/register` — register user
+- `POST /api/login` — login
+- `POST /api/forgot-password` — request password reset
+- `GET /api/{username}` — view profile
+- `GET /api/{username}/posts` — list user posts
+
+Authenticated (Sanctum bearer token via `Authorization: Bearer <token>`):
+
+- Auth: `POST /api/check-verification-code`, `POST /api/register/verification`, `POST /api/reset-password`, `POST /api/logout`
+- Profile: `GET /api/accounts/{username}`, `PUT|POST|DELETE /api/accounts/edit`
+- Follow: `POST /api/{username}/follow`, `DELETE /api/{username}/unfollow`
+- Follow Requests: `GET /api/follow-requests`, `POST /api/follow-requests/{username}/accept|decline`
+- Posts: `GET /api/posts/{user:username}`, `POST /api/posts`, `PUT|DELETE /api/posts/{user:username}/{post}`
+- Media: `POST|DELETE /api/{username}/posts/{post}/media`
+- Comments: `POST|PUT|DELETE /api/posts/{user:username}/{post}/comment[/ {comment}]`
+- Replies: `POST|PUT|DELETE /api/posts/{user:username}/{post}/{comment}/replies[/ {reply}]`
+- Likes: `POST /api/like/{model}/{id}`
+- Stories: `GET|POST|PUT|DELETE /api/stories/{user:username}[/ {story}]`
+- Notes: `GET|POST|PUT|DELETE /api/notes/{user:username}[/ {note}]`
+
+Note: Some routes use route model binding and username scoping.
+
+## Development Scripts
+
+- `composer run dev` — concurrently runs server, queue listener, live logs, and Vite
+- `npm run dev` — Vite dev server
+- `npm run build` — production asset build
+
+## Testing & Code Style
+
+```bash
+php artisan test     # or: ./vendor/bin/phpunit
+```
+
+Format with Pint:
+
+```bash
+./vendor/bin/pint
+```
+
+## Deployment Notes
+
+1) Build assets and optimize config/cache:
+
+```bash
+npm run build
+php artisan config:cache route:cache view:cache
+```
+
+2) Run migrations and queues on the server:
+
+```bash
+php artisan migrate --force
+php artisan queue:work --daemon --tries=3
+```
+
+3) Point your process manager (e.g., Supervisor/systemd) to run `php artisan queue:work`.
+
+## Troubleshooting
+
+- 419/Unauthenticated: Ensure you are sending Bearer tokens for protected routes and that `SANCTUM` is configured. For SPA/CSRF flows use proper cookies and CORS.
+- Emails not sending: Verify SMTP credentials and that the queue worker is running, or set `QUEUE_CONNECTION=sync` for local testing.
+- SQLite errors: Confirm `database/database.sqlite` exists and that the PHP process has write permissions.
+- Vite not serving assets: Ensure `npm run dev` is running during development, or `npm run build` for production.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT
